@@ -11,7 +11,8 @@
 	<key>CFBundleIconFile</key>
 	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.orcaslicer.OrcaSlicer</string>
+	<!-- AXILOOP-3D: own bundle identifier and URL scheme -->
+	<string>com.axiloop3d.AXILOOP3D</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>
@@ -32,10 +33,10 @@
     <array>
       <dict>
         <key>CFBundleURLName</key>
-        <string>OrcaSlicer Downloads</string>
+        <string>AXILOOP-3D Downloads</string>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>orcaslicer</string>
+          <string>axiloop3d</string>
         </array>
       </dict>
     </array>

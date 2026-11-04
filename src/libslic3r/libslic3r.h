@@ -2,10 +2,22 @@
 #define _libslic3r_h_
 
 #include "libslic3r_version.h"
-#define SLIC3R_APP_FULL_NAME "Orca Slicer"
-#define GCODEVIEWER_APP_NAME "OrcaSlicer G-code Viewer"
+// AXILOOP-3D: visible app names
+#define SLIC3R_APP_FULL_NAME "AXILOOP-3D"
+#define GCODEVIEWER_APP_NAME "AXILOOP-3D G-code Viewer"
 #define GCODEVIEWER_APP_KEY  "OrcaSlicerGcodeViewer"
-#define GCODEVIEWER_BUILD_ID std::string("OrcaSlicer G-code Viewer-") + std::string(SLIC3R_VERSION) + std::string("-RC")
+#define GCODEVIEWER_BUILD_ID std::string("AXILOOP-3D G-code Viewer-") + std::string(SLIC3R_VERSION) + std::string("-RC")
+// AXILOOP-3D: file headers (G-code, configs, 3MF) keep the upstream name,
+// so Klipper/Moonraker and OrcaSlicer still recognise files made by this app.
+#define SLIC3R_HEADER_APP_NAME "OrcaSlicer"
+// AXILOOP-3D: the translation files keep the upstream name (OrcaSlicer.mo).
+#define SLIC3R_TRANSLATION_DOMAIN "OrcaSlicer"
+// AXILOOP-3D: GitHub repository (owner/name) for the update check, release notes, bug reports and build links.
+// Update it when the repository is transferred.
+#define SLIC3R_GITHUB_REPO "SimonTil/AXILOOP-3D"
+// AXILOOP-3D: note shown with links to the OrcaSlicer documentation (help links stay, but aren't Axiloop's)
+#define SLIC3R_ORCA_DOCS_NOTE "OrcaSlicer documentation, not by Axiloop"
+#define SLIC3R_ORCA_DOCS_LABEL "(OrcaSlicer wiki)"
 
 // this needs to be included early for MSVC (listing it in Build.PL is not enough)
 #include <memory>

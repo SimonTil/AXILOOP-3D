@@ -221,7 +221,8 @@ fi
 # Get version information
 echo -e "${YELLOW}Getting version information...${NC}"
 if [[ -f "version.inc" ]]; then
-    VER_PURE=$(grep 'set(SoftFever_VERSION' version.inc | cut -d '"' -f2)
+    # AXILOOP-3D: own version
+    VER_PURE=$(grep 'set(AXILOOP_VERSION "' version.inc | cut -d '"' -f2)
     VER="V$VER_PURE"
     DATE=$(date +'%Y%m%d')
     echo -e "Version: ${GREEN}$VER${NC}"
@@ -342,7 +343,7 @@ echo -e "${YELLOW}Creating Flatpak bundle...${NC}"
 if ! flatpak build-bundle \
     "$BUILD_DIR/repo" \
     "$BUNDLE_NAME" \
-    com.orcaslicer.OrcaSlicer \
+    com.axiloop3d.AXILOOP3D \
     --arch="$ARCH"; then
     echo -e "${RED}Error: Failed to create Flatpak bundle${NC}"
     exit 1
@@ -360,11 +361,12 @@ echo ""
 echo -e "${BLUE}To install the Flatpak:${NC}"
 echo -e "flatpak install --user $BUNDLE_NAME"
 echo ""
-echo -e "${BLUE}To run OrcaSlicer:${NC}"
-echo -e "flatpak run com.orcaslicer.OrcaSlicer"
+# AXILOOP-3D: own app ID
+echo -e "${BLUE}To run AXILOOP-3D:${NC}"
+echo -e "flatpak run com.axiloop3d.AXILOOP3D"
 echo ""
 echo -e "${BLUE}To uninstall:${NC}"
-echo -e "flatpak uninstall --user com.orcaslicer.OrcaSlicer"
+echo -e "flatpak uninstall --user com.axiloop3d.AXILOOP3D"
 echo ""
 if [[ "$FORCE_CLEAN" != true ]]; then
     echo -e "${BLUE}Cache Management:${NC}"

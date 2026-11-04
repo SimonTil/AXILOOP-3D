@@ -77,7 +77,8 @@ esac
 # ---------- version & commit ----------
 cd "$PROJECT_ROOT"
 
-VER_PURE=$(grep 'set(SoftFever_VERSION' version.inc | cut -d '"' -f2)
+# AXILOOP-3D: own version
+VER_PURE=$(grep 'set(AXILOOP_VERSION "' version.inc | cut -d '"' -f2)
 if [ -z "$VER_PURE" ]; then
     echo "Error: could not extract version from version.inc" >&2
     exit 1
@@ -210,7 +211,7 @@ flatpak build-bundle \
     --arch="$BUILD_ARCH" \
     flatpak-repo \
     "$BUNDLE_NAME" \
-    com.orcaslicer.OrcaSlicer
+    com.axiloop3d.AXILOOP3D
 bundle_end=$(date +%s)
 bundle_duration=$((bundle_end - bundle_start))
 

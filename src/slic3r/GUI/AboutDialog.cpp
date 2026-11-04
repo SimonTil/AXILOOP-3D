@@ -149,7 +149,11 @@ wxString CopyrightsDialog::get_html_text()
         _L("License"),
         _L("Orca Slicer is licensed under "),
         "https://www.gnu.org/licenses/agpl-3.0.html",_L("GNU Affero General Public License, version 3"),
-        _L("Orca Slicer is based on PrusaSlicer and BambuStudio"),
+        // AXILOOP-3D: credit chain from AXILOOP-3D back to Slic3r (the template adds the final full stop)
+        wxString::Format("%s is based on OrcaSlicer, the open-source slicer by SoftFever and the OrcaSlicer community. "
+                         "OrcaSlicer in turn is based on PrusaSlicer by Prusa Research and Bambu Studio by Bambu Lab, "
+                         "which both go back to Slic3r by Alessandro Ranellucci and the RepRap community",
+                         SLIC3R_APP_FULL_NAME),
         _L("Libraries"),
         _L("This software uses open source components whose copyright and other proprietary rights belong to their respective owners"));
 
@@ -243,9 +247,10 @@ AboutDialog::AboutDialog()
         // _build_string_font.SetStyle(wxFONTSTYLE_ITALIC);
 
         vesizer->Add(0, 0, 1, wxEXPAND, FromDIP(5));
-        auto          version_string = std::string(SoftFever_VERSION); // _L("Orca Slicer ") + " " + std::string(SoftFever_VERSION);
+        // AXILOOP-3D: own version; the build line names the OrcaSlicer version it is based on
+        auto          version_string = std::string(AXILOOP_VERSION); // _L("Orca Slicer ") + " " + std::string(SoftFever_VERSION);
         wxStaticText* version = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
-        wxStaticText* credits_string = new wxStaticText(this, wxID_ANY, wxString::Format("Build %s", std::string(GIT_COMMIT_HASH)), wxDefaultPosition, wxDefaultSize);
+        wxStaticText* credits_string = new wxStaticText(this, wxID_ANY, wxString::Format("Build %s, based on OrcaSlicer %s", std::string(GIT_COMMIT_HASH), std::string(SoftFever_VERSION)), wxDefaultPosition, wxDefaultSize);
         credits_string->SetFont(_build_string_font);
         wxFont version_font = GetFont();
         version_font = version_font.Scaled(1.85f); // SetPointSize(20) not works on macOS because it uses a 72 PPI reference
@@ -266,9 +271,11 @@ AboutDialog::AboutDialog()
     text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(20));
 
     std::vector<wxString> text_list;
+    // AXILOOP-3D: state the origin first; the history texts below keep the upstream name
+    text_list.push_back(wxString::Format("%s is %s's slicer, based on OrcaSlicer.", SLIC3R_APP_FULL_NAME, SLIC3R_APP_FULL_NAME));
     text_list.push_back(_L("Open-source slicing stands on a tradition of collaboration and attribution. Slic3r, created by Alessandro Ranellucci and the RepRap community, laid the foundation. PrusaSlicer by Prusa Research built on that work, Bambu Studio forked from PrusaSlicer, and SuperSlicer extended it with community-driven enhancements. Each project carried the work of its predecessors forward, crediting those who came before."));
-    text_list.push_back(_L("OrcaSlicer began in that same spirit, drawing from PrusaSlicer, BambuStudio, SuperSlicer, and CuraSlicer. But it has since grown far beyond its origins — introducing advanced calibration tools, precise wall and seam control and hundreds of other features."));
-    text_list.push_back(_L("Today, OrcaSlicer is the most widely used and actively developed open-source slicer in the 3D printing community. Many of its innovations have been adopted by other slicers, making it a driving force for the entire industry."));
+    text_list.push_back(_L_KEEP_NAME("OrcaSlicer began in that same spirit, drawing from PrusaSlicer, BambuStudio, SuperSlicer, and CuraSlicer. But it has since grown far beyond its origins — introducing advanced calibration tools, precise wall and seam control and hundreds of other features."));
+    text_list.push_back(_L_KEEP_NAME("Today, OrcaSlicer is the most widely used and actively developed open-source slicer in the 3D printing community. Many of its innovations have been adopted by other slicers, making it a driving force for the entire industry."));
 
     text_sizer->Add( 0, 0, 0, wxTOP, FromDIP(33));
     bool is_zh = wxGetApp().app_config->get("language") == "zh_CN";
@@ -328,7 +335,8 @@ AboutDialog::AboutDialog()
               (boost::format(
               "<html>"
               "<body>"
-              "<p style=\"text-align:left\"><a style=\"color:#009789\" href=\"https://www.orcaslicer.com\">https://www.orcaslicer.com</ a></p>"
+              // AXILOOP-3D: Axiloop website
+              "<p style=\"text-align:left\"><a style=\"color:#3B62AE\" href=\"https://www.axiloop3d.com/\">https://www.axiloop3d.com</a></p>"
               "</body>"
               "</html>")
             ).str());

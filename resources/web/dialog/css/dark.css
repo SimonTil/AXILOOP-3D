@@ -8,8 +8,8 @@
 
   --text: #e6ebf0;
   --row-hover: #2b3340;
-  --row-selected: #244945;
-  --row-selected-outline: #00bfa5;
+  --row-selected: #26395B;
+  --row-selected-outline: #4A71BD;
 
   --footer-bg: #20262d;
   --btn-bg: #2a313a;
@@ -43,7 +43,7 @@ body
 
 #Title div
 {
-	color: #009688;
+	color: #1F3B73;
 }
 
 .search>input[type=text]{
@@ -57,7 +57,7 @@ input[type=checkbox]{
 }
 
 input[type=checkbox]:checked{
-	background-color:#009688;
+	background-color:#1F3B73;
 }
 
 /*-------Text------*/
@@ -87,7 +87,7 @@ input[type=checkbox]:checked{
 
 .RegionSelected:hover
 {
-	background-color:#009688;
+	background-color:#1F3B73;
 	color: #fff;	
 }
 

@@ -32,6 +32,11 @@
 //FIXME replace the two following includes with <boost/md5.hpp> after it becomes mainstream.
 #include <boost/uuid/detail/md5.hpp>
 #include <boost/algorithm/hex.hpp>
+// AXILOOP-3D: registry access for the Windows app theme (first-run colour mode)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
 #endif
 
 #define USE_JSON_CONFIG
@@ -40,7 +45,8 @@ using namespace nlohmann;
 
 namespace Slic3r {
 
-static const std::string VERSION_CHECK_URL = "https://check-version.orcaslicer.com/latest";
+// AXILOOP-3D: check for new releases of this app on GitHub (same JSON format as the upstream service)
+static const std::string VERSION_CHECK_URL = "https://api.github.com/repos/" SLIC3R_GITHUB_REPO "/releases";
 static const std::string PROFILE_UPDATE_URL = "https://check-version.orcaslicer.com/profile";
 static const std::string MODELS_STR = "models";
 
@@ -327,8 +333,14 @@ void AppConfig::set_defaults()
 //#endif
 
 #ifdef SUPPORT_DARK_MODE
-    if (get("dark_color_mode").empty())
-        set("dark_color_mode", "0");
+    // AXILOOP-3D: new installs follow the Windows app theme (AppsUseLightTheme = 0 means dark), light if it can't be read
+    if (get("dark_color_mode").empty()) {
+        DWORD apps_use_light_theme = 1;
+        DWORD size                 = sizeof(apps_use_light_theme);
+        RegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme",
+                     RRF_RT_REG_DWORD, nullptr, &apps_use_light_theme, &size);
+        set("dark_color_mode", apps_use_light_theme == 0 ? "1" : "0");
+    }
 #endif
 
 //#ifdef SUPPORT_SYS_MENU
@@ -371,10 +383,12 @@ void AppConfig::set_defaults()
 
     // Orca
     if (get("stealth_mode").empty()) {
-        set_bool("stealth_mode", false);
+        // AXILOOP-3D: no cloud services unless the user turns Stealth Mode off (the update check runs regardless)
+        set_bool("stealth_mode", true);
     }
     if (get("hide_login_side_panel").empty()) {
-        set_bool("hide_login_side_panel", false);
+        // AXILOOP-3D: no Orca Cloud / Bambu Cloud panel on the home page unless the user turns it on in Preferences
+        set_bool("hide_login_side_panel", true);
     }
     if (get("allow_abnormal_storage").empty()) {
         set_bool("allow_abnormal_storage", false);
@@ -422,7 +436,8 @@ void AppConfig::set_defaults()
     }
 
     if (get("show_shared_profiles_notification").empty()) {
-        set_bool("show_shared_profiles_notification", true);
+        // AXILOOP-3D: no notifications about shared profiles on Orca Cloud by default
+        set_bool("show_shared_profiles_notification", false);
     }
 
     if (get("auto_calculate_flush").empty()){

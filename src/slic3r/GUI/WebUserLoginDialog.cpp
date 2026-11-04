@@ -86,7 +86,8 @@ int ZUserLogin::ensure_loopback_port()
 }
 
 ZUserLogin::ZUserLogin(std::shared_ptr<ICloudServiceAgent> cloud_agent)
-    : wxDialog((wxWindow*) (wxGetApp().mainframe), wxID_ANY, "OrcaSlicer"), m_cloud_agent(cloud_agent)
+    // AXILOOP-3D: app name as window title
+    : wxDialog((wxWindow*) (wxGetApp().mainframe), wxID_ANY, SLIC3R_APP_FULL_NAME), m_cloud_agent(cloud_agent)
 {
     SetBackgroundColour(*wxWHITE);
 

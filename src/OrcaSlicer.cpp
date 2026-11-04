@@ -7263,7 +7263,7 @@ void CLI::print_help(bool include_print_options, PrinterTechnology printer_techn
     attach_console_on_demand();
 
     boost::nowide::cout
-        << SLIC3R_APP_KEY <<"-"<< SoftFever_VERSION << ":"
+        << SLIC3R_APP_KEY <<"-"<< AXILOOP_VERSION << ":" // AXILOOP-3D: own version
         << std::endl
         << "Usage: orca-slicer [ OPTIONS ] [ file.3mf/file.stl ... ]" << std::endl
         << std::endl

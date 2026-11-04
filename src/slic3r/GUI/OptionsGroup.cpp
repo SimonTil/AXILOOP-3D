@@ -1361,7 +1361,7 @@ void ogStaticText::SetPathEnd(const std::string& link)
         event.Skip();
     } );
     Bind(wxEVT_ENTER_WINDOW, [this, link](wxMouseEvent& event) {
-        SetToolTip(OptionsGroup::get_url(std::string()));
+        SetToolTip(wxString(SLIC3R_ORCA_DOCS_NOTE) + ":\n" + OptionsGroup::get_url(std::string())); // AXILOOP-3D: name the source
         FocusText(true);
         event.Skip();
     });

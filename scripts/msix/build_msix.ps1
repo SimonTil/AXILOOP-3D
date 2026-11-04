@@ -8,33 +8,34 @@ Developer Mode loose-layout registration instead:
 Requires the Windows SDK (makeappx.exe) unless -StageOnly is used.
 #>
 param(
+    # AXILOOP-3D: own package name, identity, publisher and exe name
     [string]$InstallDir = "build/OrcaSlicer",
-    [string]$OutputPath = "build/OrcaSlicer_Windows_MSIX.msix",
+    [string]$OutputPath = "build/AXILOOP-3D_Windows_MSIX.msix",
     [ValidateSet("x64", "arm64")]
     [string]$Architecture = "x64",
     [string]$StagingDir = "",
     [switch]$StageOnly,
-    [string]$IdentityName = "OrcaSlicer.OrcaSlicer",
-    [string]$Publisher = "CN=38F7EA55-C73B-4072-B3B2-C8E0EA15BB82",
-    [string]$PublisherDisplayName = "OrcaSlicer"
+    [string]$IdentityName = "Axiloop.AXILOOP3D",
+    # TODO: replace with Axiloop's publisher ID from the Microsoft Partner Center before a Store release
+    [string]$Publisher = "CN=Axiloop",
+    [string]$PublisherDisplayName = "Axiloop"
 )
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 
-# MSIX version = MAJOR.MINOR.PATCH.0 from the SoftFever_VERSION semver triplet
+# MSIX version = MAJOR.MINOR.PATCH.0 from the AXILOOP_VERSION semver triplet
 # (Store requires the revision field to be 0).
+# AXILOOP-3D: use the app's own version
 $versionContent = Get-Content (Join-Path $repoRoot 'version.inc') -Raw
-if ($versionContent -notmatch 'set\(SoftFever_VERSION "(\d+)\.(\d+)\.(\d+)') {
-    throw "Could not parse SoftFever_VERSION from version.inc"
+if ($versionContent -notmatch 'set\(AXILOOP_VERSION "(\d+)\.(\d+)\.(\d+)') {
+    throw "Could not parse AXILOOP_VERSION from version.inc"
 }
 $msixVersion = "$($Matches[1]).$($Matches[2]).$($Matches[3]).0"
 
-# One-off override: the wrong 2.4.2.0 build was already published to the Store, which always
-# serves the highest version and won't accept re-uploading an existing one. Replacing it needs a
-# strictly higher version with the revision field still 0, so the patch digit is bumped to 2.4.3.0.
-# The app itself stays 2.4.2 (SoftFever_VERSION). Clear this once SoftFever_VERSION >= 2.4.3.
-$msixVersionOverride = '2.4.3.0'
+# Optional one-off override (Major.Minor.Build.0), e.g. when a wrong build was already published to the Store.
+# AXILOOP-3D: upstream's override for its own Store listing removed
+$msixVersionOverride = ''
 if ($msixVersionOverride) {
     if ($msixVersionOverride -notmatch '^\d+\.\d+\.\d+\.0$') {
         throw "MSIX version override '$msixVersionOverride' must be Major.Minor.Build.0 - the Store rejects a non-zero revision field."
@@ -43,8 +44,8 @@ if ($msixVersionOverride) {
 }
 Write-Output "MSIX version: $msixVersion"
 
-if (-not (Test-Path (Join-Path $InstallDir 'orca-slicer.exe'))) {
-    throw "orca-slicer.exe not found in '$InstallDir' - build the install tree first"
+if (-not (Test-Path (Join-Path $InstallDir 'axiloop-3d.exe'))) {
+    throw "axiloop-3d.exe not found in '$InstallDir' - build the install tree first"
 }
 
 if ([string]::IsNullOrEmpty($StagingDir)) {

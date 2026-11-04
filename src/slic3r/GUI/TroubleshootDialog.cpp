@@ -130,8 +130,8 @@ TroubleshootDialog::TroubleshootDialog()
     m_logo            = ScalableBitmap(this, is_dark ? "OrcaSlicer_horizontal_dark" : "OrcaSlicer_horizontal_light", 64);
     m_header_logo     = new wxStaticBitmap(this, wxID_ANY, m_logo.bmp());
     auto logo_line    = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(-1, FromDIP(2)));
-    logo_line->SetBackgroundColour(StateColor::darkModeColorFor(wxColour("#009687")));
-    auto version      = new Label(this, wxString(SoftFever_VERSION), wxALIGN_CENTRE_HORIZONTAL);
+    logo_line->SetBackgroundColour(StateColor::darkModeColorFor(wxColour("#3B62AE")));
+    auto version      = new Label(this, wxString(AXILOOP_VERSION), wxALIGN_CENTRE_HORIZONTAL); // AXILOOP-3D: own version
     wxFont version_font = GetFont();
     version_font = version_font.Scaled(1.65f); // SetPointSize(18) not works on macOS because it uses a 72 PPI reference
     version->SetFont(version_font);
@@ -139,7 +139,8 @@ TroubleshootDialog::TroubleshootDialog()
 
     auto build = new Button(this, wxString(GIT_COMMIT_HASH));
     build->SetStyle(ButtonStyle::Regular, ButtonType::Window);
-    auto hash_url = "https://github.com/OrcaSlicer/OrcaSlicer/commit/" + wxString(GIT_COMMIT_HASH);
+    // AXILOOP-3D: the build's commit is in this app's repository
+    auto hash_url = "https://github.com/" SLIC3R_GITHUB_REPO "/commit/" + wxString(GIT_COMMIT_HASH);
     build->SetToolTip(hash_url);
     build->Bind(wxEVT_BUTTON, [hash_url](wxCommandEvent &e) {
          wxLaunchDefaultBrowser(hash_url);
@@ -248,11 +249,12 @@ TroubleshootDialog::TroubleshootDialog()
             return out;
         };
 
-        wxString url = "https://github.com/OrcaSlicer/OrcaSlicer/issues/new?template=bug_report.yml";
+        // AXILOOP-3D: bug reports go to this app's repository
+        wxString url = "https://github.com/" SLIC3R_GITHUB_REPO "/issues/new?template=bug_report.yml";
         wxString os = GetOStype();
         if(!os.IsEmpty())
             url += "&os_type=%22" + os +"%22";
-        url += "&version="     + encodeStr(wxString(SoftFever_VERSION));
+        url += "&version="     + encodeStr(wxString(AXILOOP_VERSION)); // AXILOOP-3D: own version in bug reports
         url += "&os_version="  + encodeStr(GetOSinfo());
         wxLaunchDefaultBrowser(url);
     });
@@ -370,7 +372,8 @@ wxString TroubleshootDialog::GetTimestamp()
 wxString TroubleshootDialog::GetSysInfoAll()
 {
     wxString info;
-    info += "Version   :  " + wxString(SoftFever_VERSION) + "\n"
+    // AXILOOP-3D: own version, with the OrcaSlicer version it is based on
+    info += "Version   :  " + wxString(AXILOOP_VERSION) + " (OrcaSlicer " + wxString(SoftFever_VERSION) + ")\n"
           + "Build     :  " + wxString(GIT_COMMIT_HASH)   + "\n"
           + "Package   :  " + GetPackageType() + "\n"
           + "Platform  :  " + GetOSinfo()      + "\n"

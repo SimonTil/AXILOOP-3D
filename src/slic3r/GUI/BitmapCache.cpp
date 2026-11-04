@@ -270,6 +270,21 @@ wxBitmap* BitmapCache::load_png(const std::string &bitmap_name, unsigned width, 
     return this->insert(bitmap_key, wxImage_to_wxBitmap_with_alpha(std::move(image)));
 }
 
+// AXILOOP-3D: function to list the replacements that turn the OrcaSlicer accent in icon files into the AXILOOP-3D accent.
+// Returns a map from icon colour to new colour, for nsvgParseFromFileWithReplace(). Same colours as axiloop/rebrand_colors.ps1.
+std::map<std::string, std::string> BitmapCache::accent_replaces(bool dark_mode)
+{
+    const std::string accent = dark_mode ? "#3B62AE" : "#1F3B73";
+    const std::string tint   = dark_mode ? "#2A2F3B" : "#EAEEF5";
+    return {
+        { "#009688", accent },                              // accent
+        { "#26A69A", "#2C4F94" }, { "#26a69a", "#2C4F94" }, // accent hover
+        { "#00675B", "#3B62AE" }, { "#00675b", "#3B62AE" }, // accent in dark mode
+        { "#52C7B8", "#6F8FD1" }, { "#52c7b8", "#6F8FD1" }, // light accent
+        { "#E5F0EE", tint },      { "#e5f0ee", tint },      // accent tint
+    };
+}
+
 NSVGimage* BitmapCache::nsvgParseFromFileWithReplace(const char* filename, const char* units, float dpi, const std::map<std::string, std::string>& replaces)
 {
     std::string str;
@@ -347,6 +362,11 @@ wxBitmap* BitmapCache::load_svg(const std::string &bitmap_name, unsigned target_
     if (strstr(bitmap_name.c_str(), "toggle_on") != NULL && dark_mode) // ORCA only replace color of toggle button
         replaces["#009688"] = "#00675b";
 
+    // AXILOOP-3D: recolour the OrcaSlicer accent in icons. Quoted keys above are applied first,
+    // so their teal results are recoloured here as well.
+    for (const auto &[from, to] : accent_replaces(dark_mode))
+        replaces[from] = to;
+
     if (!new_color.empty())
         replaces["\"#009688\""] = "\"" + new_color + "\"";
 
@@ -403,7 +423,7 @@ wxBitmap* BitmapCache::load_svg2(const std::string& bitmap_name, unsigned target
     const bool grayscale/* = false*/, const bool dark_mode/* = false*/, const std::vector<std::string>& array_new_color /*= vector<std::string>()*/, const float scale_in_center/* = 0*/)
 {
 
-    std::map<std::string, std::string> replaces;
+    std::map<std::string, std::string> replaces = accent_replaces(dark_mode); // AXILOOP-3D: recolour the accent
     if (array_new_color.size() == 2) {
         replaces["#D9D9D9"] = array_new_color[0];
         replaces["fill-opacity=\"1.0"] = array_new_color[1];

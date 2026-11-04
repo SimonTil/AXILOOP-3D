@@ -180,7 +180,7 @@ private:
         dc.SetBackground(wxBrush(GetParent() ? GetParent()->GetBackgroundColour() : *wxWHITE));
         dc.Clear();
  
-        wxColour textCol = StateColor::darkModeColorFor(m_hovered ? "#26A69A" : "#363636");
+        wxColour textCol = StateColor::darkModeColorFor(m_hovered ? "#2C4F94" : "#363636");
  
         dc.SetTextForeground(textCol);
         dc.SetFont(m_font);
@@ -264,7 +264,8 @@ wxBoxSizer *PreferencesDialog::create_item_label(wxString label, wxString toolti
 
     auto label_ctrl = new WikiLabel(m_parent, label, url, wxDefaultPosition, DESIGN_TITLE_SIZE);
 
-    label_ctrl->SetToolTip(tooltip);
+    // AXILOOP-3D: say that the label's help link opens the OrcaSlicer documentation
+    label_ctrl->SetToolTip(url.IsEmpty() ? tooltip : tooltip + "\n\n" + SLIC3R_ORCA_DOCS_NOTE + ":\n" + url);
 
     sizer->Add(label_ctrl, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, FromDIP(3));
     sizer->AddSpacer(FromDIP(5));
@@ -367,7 +368,8 @@ wxBoxSizer *PreferencesDialog::create_item_language_combobox(wxString title, wxS
         wxLANGUAGE_THAI
     };
 
-    auto translations = wxTranslations::Get()->GetAvailableTranslations(SLIC3R_APP_KEY);
+    // AXILOOP-3D: translation files keep the upstream name
+    auto translations = wxTranslations::Get()->GetAvailableTranslations(SLIC3R_TRANSLATION_DOMAIN);
     std::vector<const wxLanguageInfo *> language_infos;
     language_infos.emplace_back(wxLocale::GetLanguageInfo(wxLANGUAGE_ENGLISH));
     for (size_t i = 0; i < translations.GetCount(); ++i) {

@@ -16,7 +16,9 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$source   = Join-Path $repoRoot 'resources\images\OrcaSlicer_gradient_circle.svg'
+# AXILOOP-3D: render the AXILOOP-3D app icon
+# TODO: run this script once to replace the OrcaSlicer PNGs in assets/ before building an MSIX package
+$source   = Join-Path $repoRoot 'resources\images\OrcaSlicer.svg'
 $outDir   = Join-Path $PSScriptRoot 'assets'
 New-Item -ItemType Directory -Force $outDir | Out-Null
 

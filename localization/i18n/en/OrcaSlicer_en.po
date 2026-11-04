@@ -3943,7 +3943,7 @@ msgid ""
 "deleted by anti-virus software."
 msgstr ""
 "Failed to install the plug-in. The plug-in file may be in use. Please "
-"restart OrcaSlicer and try again. Also check whether it is blocked or has "
+"restart AXILOOP-3D and try again. Also check whether it is blocked or has "
 "been deleted by anti-virus software."
 
 msgid "Click here to see more info"
@@ -8562,7 +8562,7 @@ msgstr ""
 
 msgid "If enabled, sets OrcaSlicer as default application to open 3MF files."
 msgstr ""
-"If enabled, this sets OrcaSlicer as the default application to open 3MF "
+"If enabled, this sets AXILOOP-3D as the default application to open 3MF "
 "files."
 
 msgid "Associate DRC files to OrcaSlicer"
@@ -8576,7 +8576,7 @@ msgstr ""
 
 msgid "If enabled, sets OrcaSlicer as default application to open STL files."
 msgstr ""
-"If enabled, this sets OrcaSlicer as the default application to open STL "
+"If enabled, this sets AXILOOP-3D as the default application to open STL "
 "files."
 
 msgid "Associate STEP files to OrcaSlicer"
@@ -8584,7 +8584,7 @@ msgstr ""
 
 msgid "If enabled, sets OrcaSlicer as default application to open STEP files."
 msgstr ""
-"If enabled, this sets OrcaSlicer as the default application to open STEP "
+"If enabled, this sets AXILOOP-3D as the default application to open STEP "
 "files."
 
 msgid "Associate web links to OrcaSlicer"
@@ -9312,7 +9312,7 @@ msgid "Storage needs to be inserted before send to printer."
 msgstr ""
 
 msgid "The printer is required to be in the same LAN as Orca Slicer."
-msgstr "The printer is required to be on the same LAN as Orca Slicer."
+msgstr "The printer is required to be on the same LAN as AXILOOP-3D."
 
 msgid "The printer does not support sending to printer storage."
 msgstr ""
@@ -10972,7 +10972,7 @@ msgstr ""
 msgid ""
 "Click OK to update the Network plug-in when Orca Slicer launches next time."
 msgstr ""
-"Click OK to update the Network plug-in the next time Orca Slicer launches."
+"Click OK to update the Network plug-in the next time AXILOOP-3D launches."
 
 #, c-format, boost-format
 msgid "A new Network plug-in (%s) is available. Do you want to install it?"
@@ -11140,7 +11140,7 @@ msgid ""
 msgstr ""
 "The firmware version is abnormal. Repairing and updating are required before "
 "printing. Do you want to update now? You can also update later on the "
-"printer or update next time you start Orca Slicer."
+"printer or update next time you start AXILOOP-3D."
 
 msgid "Extension Board"
 msgstr ""

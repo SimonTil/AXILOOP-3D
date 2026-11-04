@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-    <id>com.orcaslicer.OrcaSlicer</id>
-    <launchable type="desktop-id">com.orcaslicer.OrcaSlicer.desktop</launchable>
-    <name>OrcaSlicer</name>
-    <summary>Get even more perfect prints!</summary>
-    <developer id="com.orcaslicer">
-        <name>SoftFever</name>
+    <!-- AXILOOP-3D: own app ID, name, developer, links, description and brand colours -->
+    <id>com.axiloop3d.AXILOOP3D</id>
+    <launchable type="desktop-id">com.axiloop3d.AXILOOP3D.desktop</launchable>
+    <name>AXILOOP-3D</name>
+    <summary>Axiloop's slicer for FDM 3D printers, based on OrcaSlicer</summary>
+    <developer id="com.axiloop3d">
+        <name>Axiloop</name>
     </developer>
-    <url type="homepage">https://www.orcaslicer.com</url>
+    <url type="homepage">https://www.axiloop3d.com/</url>
     <url type="help">https://www.orcaslicer.com/wiki</url>
-    <url type="bugtracker">https://github.com/OrcaSlicer/OrcaSlicer/issues/</url>
-    <url type="donation">https://ko-fi.com/SoftFever</url>
-    <url type="vcs-browser">https://github.com/OrcaSlicer/OrcaSlicer</url>
+    <url type="bugtracker">https://github.com/SimonTil/AXILOOP-3D/issues/</url>
+    <url type="vcs-browser">https://github.com/SimonTil/AXILOOP-3D</url>
     <metadata_license>0BSD</metadata_license>
     <project_license>AGPL-3.0-only</project_license>
     <content_rating type="oars-1.1" />
@@ -22,6 +22,7 @@
         <control>keyboard</control>
         <control>pointing</control>
     </recommends>
+    <!-- TODO: replace the OrcaSlicer screenshots and release list with AXILOOP-3D's own at the first release -->
     <screenshots>
         <screenshot type="default">
             <image>https://raw.githubusercontent.com/OrcaSlicer/OrcaSlicer/v2.3.2/scripts/flatpak/images/1.png</image>
@@ -33,16 +34,13 @@
         </screenshot>
     </screenshots>
     <description>
-        <p>OrcaSlicer is a powerful, free and open-source 3D printer slicer with cutting-edge
-            features for FDM printing. It supports a wide range of printers from manufacturers
-            including Bambu Lab, Prusa, Voron, Creality, and many more.</p>
-        <p>Key features include advanced calibration tools, adaptive layer heights, tree supports,
-            multi-material support, and an intuitive interface for both beginners and experts.
-            OrcaSlicer also provides built-in network printing capabilities for compatible printers.</p>
+        <p>AXILOOP-3D is Axiloop's free and open-source slicer for FDM 3D printers. It is based on
+            OrcaSlicer and offers the same features, including advanced calibration tools, adaptive
+            layer heights, tree supports and multi-material support.</p>
     </description>
     <branding>
-        <color type="primary" scheme_preference="light">#009688</color>
-        <color type="primary" scheme_preference="dark">#00695C</color>
+        <color type="primary" scheme_preference="light">#1F3B73</color>
+        <color type="primary" scheme_preference="dark">#3B62AE</color>
     </branding>
     <releases>
         <release version="2.4.2" date="2026-07-26">

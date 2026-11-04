@@ -1,19 +1,20 @@
+// AXILOOP-3D: own version as comma-separated numbers (Windows ignores the dotted form), company and exe name
 1 VERSIONINFO
-FILEVERSION @SLIC3R_VERSION@
-PRODUCTVERSION @SLIC3R_VERSION@
+FILEVERSION @AXILOOP_VERSION_MAJOR@,@AXILOOP_VERSION_MINOR@,@AXILOOP_VERSION_PATCH@,0
+PRODUCTVERSION @AXILOOP_VERSION_MAJOR@,@AXILOOP_VERSION_MINOR@,@AXILOOP_VERSION_PATCH@,0
 {
  BLOCK "StringFileInfo"
  {
   BLOCK "040904E4"
   {
-   VALUE "CompanyName", "SoftFever"
+   VALUE "CompanyName", "Axiloop"
    VALUE "FileDescription", "@SLIC3R_APP_NAME@"
-   VALUE "FileVersion", "@SLIC3R_BUILD_ID@"
+   VALUE "FileVersion", "@AXILOOP_VERSION@"
    VALUE "ProductName", "@SLIC3R_APP_NAME@"
-   VALUE "ProductVersion", "@SLIC3R_BUILD_ID@"
+   VALUE "ProductVersion", "@AXILOOP_VERSION@"
    VALUE "InternalName", "@SLIC3R_APP_NAME@"
    VALUE "LegalCopyright", ""
-   VALUE "OriginalFilename", "orca-slicer.exe"
+   VALUE "OriginalFilename", "axiloop-3d.exe"
   }
  }
  BLOCK "VarFileInfo"
@@ -22,4 +23,4 @@ PRODUCTVERSION @SLIC3R_VERSION@
  }
 }
 2 ICON "@SLIC3R_RESOURCES_DIR@/images/OrcaSlicer.ico"
-1 24 "OrcaSlicer.manifest" 
+1 24 "OrcaSlicer.manifest"
