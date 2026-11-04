@@ -4,6 +4,8 @@ on:
     types: [ released ]
 jobs:
   publish:
+    # AXILOOP-3D: publishes OrcaSlicer's WinGet package, so only on OrcaSlicer's repository
+    if: github.repository == 'OrcaSlicer/OrcaSlicer'
     runs-on: windows-latest
     steps:
       - uses: vedantmgoyal9/winget-releaser@main

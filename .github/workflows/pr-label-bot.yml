@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   request-label:
-    if: github.event_name == 'pull_request_target' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' && github.event.pull_request.author_association != 'MEMBER'
+    if: github.repository == 'OrcaSlicer/OrcaSlicer' && github.event_name == 'pull_request_target' && github.event.pull_request.author_association != 'COLLABORATOR' && github.event.pull_request.author_association != 'OWNER' && github.event.pull_request.author_association != 'MEMBER'
     permissions:
       contents: read
       pull-requests: write
@@ -80,7 +80,7 @@ jobs:
             }
 
   apply-label:
-    if: github.event_name == 'issue_comment'
+    if: github.repository == 'OrcaSlicer/OrcaSlicer' && github.event_name == 'issue_comment' # AXILOOP-3D: OrcaSlicer's repository only, like the job above
     permissions:
       contents: read
       pull-requests: write

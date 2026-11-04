@@ -95,6 +95,8 @@ The help links still open the OrcaSlicer documentation (there is no AXILOOP-3D d
 | `src/slic3r/GUI/NetworkTestDialog.cpp` | The GitHub test ("Start" for the single test and the full test) opens this repository (`SLIC3R_GITHUB_REPO`) instead of OrcaSlicer's. | Tests the connection to the place where AXILOOP-3D updates come from. |
 | `src/slic3r/GUI/TroubleshootDialog.cpp` | Build commit link and bug report link to this repository. | Commits and issues of AXILOOP-3D live here. |
 
+| `.github/workflows/winget_updater.yml`, `.github/workflows/pr-label-bot.yml` | Only run on OrcaSlicer's repository. Assign, Build all, Doxygen and Shellcheck are turned off in the GitHub settings of this repository instead. | They publish OrcaSlicer's WinGet package or act on issues and pull requests. Turn Build all on again if you want automatic builds. |
+
 ### Installers and packages
 
 | File | What changed | Why |
