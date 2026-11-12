@@ -182,6 +182,14 @@ jobs:
           source scripts/retry.sh
           retry hdiutil create -volname "AXILOOP-3D" -srcfolder dmg_root -ov -format UDZO "AXILOOP-3D_Mac_universal_V${ver}.dmg"
 
+      # The stapler fetches the ticket over HTTP/3 (UDP 443), which GitHub's macOS runners drop
+      # (Error 68); blocking UDP 443 makes it fall back to TCP
+      - name: Force the stapler onto TCP
+        if: ${{ env.sign == 'true' }}
+        run: |
+          echo "block return out quick proto udp from any to any port 443" | sudo pfctl -f -
+          sudo pfctl -E
+
       # Sign the DMG, send it to Apple for notarisation and attach the ticket
       - name: Sign and notarise the DMG
         if: ${{ env.sign == 'true' }}
@@ -198,7 +206,8 @@ jobs:
             echo "Notarisation status: $status"
             exit 1
           fi
-          xcrun stapler staple "$dmg"
+          source scripts/retry.sh
+          retry xcrun stapler staple "$dmg"
           xcrun stapler validate "$dmg"
 
       - name: Remove the temporary keychain
