@@ -1,7 +1,7 @@
 var m_ProfileItem;
 
 var FilamentPriority = new Array( "pla","abs","pet","tpu","pc");
-var VendorPriority   = new Array("generic");
+var VendorPriority   = new Array("axiloop", "generic"); // AXILOOP-3D: Axiloop first in the brand list
 
 function RequestProfile()
 {
@@ -206,6 +206,13 @@ function SortUI()
 		$("#VendorList .CValues").append( VendorHtmlArray[key] );
 	}	
 	$("#VendorList .CValues input").prop("checked",true);
+
+	// AXILOOP-3D: with an Axiloop printer selected, show only Axiloop's filaments; other brands can be ticked again
+	if (ModelList.some(m => m['vendor'] === "Axiloop") && $("#VendorList input[vendor='Axiloop']").length > 0) {
+		$("#VendorList .CValues input").prop("checked",false);
+		$("#VendorList input[vendor='Axiloop']").prop("checked",true);
+		SortFilament();
+	}
 	
 	if(SelectNumber==0)
 		ChooseDefaultFilament();

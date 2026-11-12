@@ -20,7 +20,7 @@ body
 	height:20mm;
 	line-height: 20mm;
 	font-size: 6mm;
-	color: #1F3B73;
+	color: var(--wizard-title, #1F3B73); /* AXILOOP-3D: lighter in dark mode, see css/dark.css */
 }
 
 #STip

@@ -1,4 +1,6 @@
 var	pModel              = {};
+// AXILOOP-3D: Axiloop's printers are listed on their own; all other brands go under a collapsible "Other printers"
+const MainVendor          = "Axiloop";
 var	ModelNozzleSelected = {};
 let SearchBox;
 let $content;
@@ -49,8 +51,9 @@ function HandleModelList( pVal )
 	// ORCA ensure list correctly ordered
 	pModel = pModel.sort((a, b)=>(a["vendor"].localeCompare(b["vendor"])))
 	pModel = [ // move custom printers to top
+		...pModel.filter(i=>i.vendor === MainVendor), // AXILOOP-3D: Axiloop first
 		...pModel.filter(i=>i.vendor === "Custom"),
-		...pModel.filter(i=>i.vendor !== "Custom")
+		...pModel.filter(i=>i.vendor !== "Custom" && i.vendor !== MainVendor)
 	];
 	
 	let nTotal=pModel.length;
@@ -65,7 +68,7 @@ function HandleModelList( pVal )
 		if($(".OneVendorBlock[vendor='"+strVendor+"']").length==0)
 		{
 			let HtmlNewVendor = CreateVendorBlock(strVendor);
-			$('#Content').append(HtmlNewVendor);
+			VendorParent(strVendor).append(HtmlNewVendor); // AXILOOP-3D
 		}
 		
 		let ModelName=OneModel['model'];
@@ -170,6 +173,8 @@ function FilterModelList(keyword) {
 	let ModelHtml = {};
 	let kwSplit = keyword.toLowerCase().match(/\S+/g) || [];
 
+	// AXILOOP-3D: keep "Other printers" open after a search, and open it while searching
+	let OtherOpen = $('#OtherPrinters').prop('open') || false;
 	$('#Content').empty();
 	for (let n = 0; n < nTotal; n++) {
 		let OneModel = pModel[n];
@@ -183,7 +188,7 @@ function FilterModelList(keyword) {
 		//Add Vendor Html Node
 		if ($(".OneVendorBlock[vendor='" + strVendor + "']").length == 0) {
 			let HtmlNewVendor = CreateVendorBlock(strVendor);
-			$('#Content').append(HtmlNewVendor);
+			VendorParent(strVendor).append(HtmlNewVendor); // AXILOOP-3D
 		}
 
 		//Collect Html Node Nozzel Html
@@ -199,6 +204,8 @@ function FilterModelList(keyword) {
 		obj.empty();
 		obj.append(ModelHtml[key]);
 	}
+
+	$('#OtherPrinters').prop('open', OtherOpen || kwSplit.length > 0); // AXILOOP-3D
 
 	//Update Checkbox
 	ModelSelect = $('.ModelCheckBox');
@@ -232,6 +239,19 @@ function FilterModelList(keyword) {
 
 function textInput(obj) {
 	FilterModelList(obj.value);
+}
+
+// AXILOOP-3D: function to pick where a brand's block goes: Axiloop at the top, other brands in "Other printers".
+// Returns the jQuery element to append the block to.
+function VendorParent(vendorName)
+{
+	if (vendorName === MainVendor)
+		return $('#Content');
+
+	if ($('#OtherPrinters').length == 0)
+		$('#Content').append('<details id="OtherPrinters"><summary class="OtherPrintersTitle">Other printers</summary></details>');
+
+	return $('#OtherPrinters');
 }
 
 function CreateVendorBlock(vendorName)
@@ -296,6 +316,7 @@ function CreatePrinterBlock(OneModel)
 function scrollToVendor(vendor) {
 	const el = $(".OneVendorBlock[vendor='"+vendor+"']")[0];
 	if (el){
+		$(el).closest('#OtherPrinters').prop('open', true); // AXILOOP-3D: open "Other printers" first
 		document.getElementById('SidebarContainer').setAttribute('open', '0');
 		document.getElementById('Content').scrollTo({top: el.offsetTop, behavior: "smooth"});
 	}

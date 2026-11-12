@@ -439,3 +439,24 @@ img.ModelThumbnail {
 	display: flex;
 	justify-content:flex-end;
 }
+
+/* AXILOOP-3D: collapsible "Other printers" section below the Axiloop printers */
+#OtherPrinters {
+	margin: 10px 0 36px 0;
+}
+
+.OtherPrintersTitle {
+	cursor: pointer;
+	padding: 0 10px;
+	line-height: 34px;
+	font-size: 17px;
+	font-weight: 600;
+	color: var(--fg-color-label);
+	border-bottom: 2px solid var(--border-color);
+	background-color: var(--bg-color-secondary);
+	user-select: none;
+}
+
+#OtherPrinters[open] > .OtherPrintersTitle {
+	margin-bottom: 7px;
+}
