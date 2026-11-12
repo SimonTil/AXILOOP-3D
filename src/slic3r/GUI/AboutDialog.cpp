@@ -3,13 +3,33 @@
 
 #include "libslic3r/Utils.hpp"
 #include "libslic3r/Color.hpp"
+#include "BuildCommit.hpp"
 #include "GUI.hpp"
 #include "GUI_App.hpp"
 #include "MainFrame.hpp"
 #include "format.hpp"
 #include "Widgets/Button.hpp"
+#include "libslic3r_version.h"
 
+#include "slic3r/GUI/GUI_Utils.hpp"
+#include "libslic3r/libslic3r.h"
+#include "slic3r/GUI/wxExtensions.hpp"
+#include "slic3r/GUI/Widgets/Label.hpp"
+#include <vector>
 #include <wx/clipbrd.h>
+#include <wx/panel.h>
+#include <wx/wx.h>
+#include <wx/gdicmn.h>
+#include <wx/event.h>
+#include <wx/dcclient.h>
+#include <wx/dialog.h>
+#include <wx/toplevel.h>
+#include <wx/sizer.h>
+#include <wx/html/htmlwin.h>
+#include <wx/string.h>
+#include <wx/colour.h>
+#include <wx/dataobj.h>
+#include <wx/statline.h>
 
 namespace Slic3r {
 namespace GUI {
@@ -44,7 +64,7 @@ void AboutDialogLogo::onRepaint(wxEvent &event)
 CopyrightsDialog::CopyrightsDialog()
     : DPIDialog(static_cast<wxWindow*>(wxGetApp().mainframe), wxID_ANY, from_u8((boost::format("%1% - %2%")
         % (wxGetApp().is_editor() ? SLIC3R_APP_FULL_NAME : GCODEVIEWER_APP_NAME)
-        % _utf8(L("Portions copyright"))).str()),
+        % _utf8(L("License Info"))).str()),
         wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
     this->SetFont(wxGetApp().normal_font());
@@ -250,7 +270,8 @@ AboutDialog::AboutDialog()
         // AXILOOP-3D: own version; the build line names the OrcaSlicer version it is based on
         auto          version_string = std::string(AXILOOP_VERSION); // _L("Orca Slicer ") + " " + std::string(SoftFever_VERSION);
         wxStaticText* version = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
-        wxStaticText* credits_string = new wxStaticText(this, wxID_ANY, wxString::Format("Build %s, based on OrcaSlicer %s", std::string(GIT_COMMIT_HASH), std::string(SoftFever_VERSION)), wxDefaultPosition, wxDefaultSize);
+        // AXILOOP-3D: the build line also names the OrcaSlicer version it is based on
+        wxStaticText* credits_string = new wxStaticText(this, wxID_ANY, wxString::Format("Build %s, based on OrcaSlicer %s", build_commit_label, std::string(SoftFever_VERSION)), wxDefaultPosition, wxDefaultSize);
         credits_string->SetFont(_build_string_font);
         wxFont version_font = GetFont();
         version_font = version_font.Scaled(1.85f); // SetPointSize(20) not works on macOS because it uses a 72 PPI reference
@@ -318,7 +339,7 @@ AboutDialog::AboutDialog()
 
     copyright_hor_sizer->Add(copyright_ver_sizer, 0, wxLEFT, FromDIP(20));
 
-    wxStaticText *html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2026 OrcaSlicer Pte Ltd All Rights Reserved", wxDefaultPosition, wxDefaultSize);
+    wxStaticText *html_text = new wxStaticText(this, wxID_ANY, _L("Copyright(C) 2026 OrcaSlicer Pte Ltd All Rights Reserved"), wxDefaultPosition, wxDefaultSize);
     html_text->SetForegroundColour(wxColour(107, 107, 107));
 
     copyright_ver_sizer->Add(html_text, 0, wxALL , 0);
@@ -331,10 +352,12 @@ AboutDialog::AboutDialog()
           m_html->SetFonts(font.GetFaceName(), font.GetFaceName(), size);
           m_html->SetMinSize(wxSize(FromDIP(-1), FromDIP(16)));
           m_html->SetBorders(2);
+          wxColour   bgr_clr = GetBackgroundColour();
+          const auto bgr_clr_str = encode_color(ColorRGB(bgr_clr.Red(), bgr_clr.Green(), bgr_clr.Blue()));
           const auto text = from_u8(
               (boost::format(
               "<html>"
-              "<body>"
+              "<body bgcolor= \"" + bgr_clr_str + "\" >"
               // AXILOOP-3D: Axiloop website
               "<p style=\"text-align:left\"><a style=\"color:#3B62AE\" href=\"https://www.axiloop3d.com/\">https://www.axiloop3d.com</a></p>"
               "</body>"
@@ -345,7 +368,7 @@ AboutDialog::AboutDialog()
           m_html->Bind(wxEVT_HTML_LINK_CLICKED, &AboutDialog::onLinkClicked, this);
       }
     //Add "Portions copyright" button
-    Button* button_portions = new Button(this,_L("Portions copyright"));
+    Button* button_portions = new Button(this,_L("License Info"));
     button_portions->SetStyle(ButtonStyle::Regular, ButtonType::Window);
 
     wxBoxSizer *copyright_button_ver = new wxBoxSizer(wxVERTICAL);

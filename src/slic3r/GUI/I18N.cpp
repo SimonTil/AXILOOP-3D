@@ -1,4 +1,8 @@
 #include "I18N.hpp"
+#include <wx/string.h>
+#include <string>
+#include <wx/translation.h>
+#include <wx/strconv.h>
 
 #include "libslic3r/libslic3r.h"
 

@@ -1,6 +1,7 @@
 # Replaces the upstream app name in the translated texts by "AXILOOP-3D":
 #   - localization/i18n/*/*.po : only the translations (msgstr), never the source texts (msgid)
-#   - resources/web/data/text.js and resources/web/**/*.html : the web page texts
+#   - resources/web/**/*.html : the English fallback texts of the web pages (since OrcaSlicer 2.5.0 the pages get
+#     their texts from the program, through the .po files; resources/web/data/text.js is only used if it exists)
 # Run it again after every upstream merge. For a conflicting translation or web file, take upstream's version
 # first (git checkout --theirs <file>). Running it on files that are already rebranded changes nothing.
 #
@@ -126,7 +127,9 @@ foreach ($po in Get-ChildItem (Join-Path $RepoRoot 'localization\i18n') -Recurse
     $n = Update-PoFile $po.FullName; $grand += $n
     Write-Host ("{0,5}  {1}" -f $n, $po.FullName.Substring($RepoRoot.Length + 1))
 }
-$webFiles = @(Get-Item (Join-Path $RepoRoot 'resources\web\data\text.js')) + @(Get-ChildItem (Join-Path $RepoRoot 'resources\web') -Recurse -Filter *.html)
+$webFiles = @(Get-ChildItem (Join-Path $RepoRoot 'resources\web') -Recurse -Filter *.html)
+$textJs = Join-Path $RepoRoot 'resources\web\data\text.js'
+if (Test-Path $textJs) { $webFiles += @(Get-Item $textJs) }
 foreach ($web in $webFiles) {
     $n = Update-WebFile $web.FullName; $grand += $n
     if ($n -gt 0) { Write-Host ("{0,5}  {1}" -f $n, $web.FullName.Substring($RepoRoot.Length + 1)) }

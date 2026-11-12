@@ -18,7 +18,7 @@ on:
         default: linux and macos
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.platform }}
   cancel-in-progress: false
 
 # actions: write lets OrcaSlicer's macOS step delete its intermediate per-architecture artifacts
@@ -83,7 +83,7 @@ jobs:
           - x86_64
     uses: ./.github/workflows/build_check_cache.yml
     with:
-      os: macos-14
+      os: macos-15
       arch: ${{ matrix.arch }}
     secrets: inherit
 
@@ -94,7 +94,7 @@ jobs:
     if: ${{ !cancelled() && needs.build_macos_arch.result == 'success' }}
     uses: ./.github/workflows/build_orca.yml
     with:
-      os: macos-14
+      os: macos-15
       arch: universal
       macos-combine-only: true
     secrets: inherit
@@ -103,7 +103,7 @@ jobs:
     name: Sign and package macOS DMG
     needs: build_macos_universal
     if: ${{ !cancelled() && needs.build_macos_universal.result == 'success' }}
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
       P12_PASSWORD: ${{ secrets.P12_PASSWORD }}

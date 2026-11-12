@@ -2,9 +2,9 @@
 
 AXILOOP-3D is OrcaSlicer with Axiloop branding. This file lists every file that differs from upstream OrcaSlicer, what changed and why. Keep it up to date with every change: when merging a new upstream release, these are the files where conflicts can occur.
 
-- Base: upstream release tag `v2.4.2`, work branch `axiloop-3d`.
+- Base: upstream release tag `v2.5.0` (until AXILOOP-3D 0.1.0: `v2.4.2`), work branch `axiloop-3d`.
 - Every code change is marked with an `AXILOOP-3D:` comment. List them all with `git grep -n "AXILOOP-3D:"`.
-- Full difference with upstream: `git diff v2.4.2 --stat`.
+- Full difference with upstream: `git diff v2.5.0 --stat`.
 
 ## Changed files
 
@@ -12,12 +12,12 @@ AXILOOP-3D is OrcaSlicer with Axiloop branding. This file lists every file that 
 
 | File | What changed | Why |
 |---|---|---|
-| `version.inc` | `SLIC3R_APP_NAME` and `SLIC3R_APP_KEY` set to `AXILOOP-3D`. New `AXILOOP_VERSION` (`0.1.0`; `1.0.0` once the Axiloop printer profiles are added) with major/minor/patch parts. | Visible name, settings folder `%APPDATA%\AXILOOP-3D`, config file `AXILOOP-3D.conf`. AXILOOP-3D has its own version number. `SoftFever_VERSION` stays upstream's version, because 3MF and config compatibility and the settings migrations compare against it. |
+| `version.inc` | `SLIC3R_APP_NAME` and `SLIC3R_APP_KEY` set to `AXILOOP-3D`. New `AXILOOP_VERSION` (the AXILOOP-3D version, such as `0.1.0`) with major/minor/patch parts. | Visible name, settings folder `%APPDATA%\AXILOOP-3D`, config file `AXILOOP-3D.conf`. AXILOOP-3D has its own version number. `SoftFever_VERSION` stays upstream's version, because 3MF and config compatibility and the settings migrations compare against it. |
 | `src/libslic3r/libslic3r_version.h.in` | New define `AXILOOP_VERSION`. | Makes the product version available in the code. |
 | `src/libslic3r/libslic3r.h` | `SLIC3R_APP_FULL_NAME`, `GCODEVIEWER_APP_NAME` and `GCODEVIEWER_BUILD_ID` use `AXILOOP-3D`. New constants: `SLIC3R_HEADER_APP_NAME` and `SLIC3R_TRANSLATION_DOMAIN` (both `"OrcaSlicer"`), `SLIC3R_GITHUB_REPO` (`"SimonTil/AXILOOP-3D"`), `SLIC3R_ORCA_DOCS_NOTE` and `SLIC3R_ORCA_DOCS_LABEL`. | Visible names. File headers and translation files keep the upstream name. The repository is set in one place; update `SLIC3R_GITHUB_REPO` after a repository transfer. The two note texts mark links to the OrcaSlicer documentation. |
 | `src/slic3r/GUI/GUI_App.cpp` | Translation lookups use `SLIC3R_TRANSLATION_DOMAIN`. The displayed version (splash screen) and the update check use `AXILOOP_VERSION`. Also see the other tables. | The translation files are still named `OrcaSlicer.mo`. Users see and update this app's own version. |
 | `src/slic3r/GUI/Preferences.cpp` | The language list uses `SLIC3R_TRANSLATION_DOMAIN`. Also see "Help links". | Same reason. |
-| `src/slic3r/GUI/AboutDialog.cpp` | Shows `AXILOOP_VERSION`; the build line reads "Build <hash>, based on OrcaSlicer <version>". Also see "Texts". | Own version, with the OrcaSlicer version it's based on. |
+| `src/slic3r/GUI/AboutDialog.cpp` | Shows `AXILOOP_VERSION`; the build line reads "Build <commit>, based on OrcaSlicer <version>" (the commit from `build_commit_label`). Also see "Texts". | Own version, with the OrcaSlicer version it's based on. |
 | `src/slic3r/GUI/TroubleshootDialog.cpp`, `src/slic3r/GUI/NetworkTestDialog.cpp`, `src/slic3r/GUI/GCodeViewer.cpp`, `src/OrcaSlicer.cpp`, `src/dev-utils/BaseException.cpp` | Version shown in the troubleshoot and network test dialogs, bug reports, OBJ export headers, command-line help and the crash report: `AXILOOP_VERSION` (the troubleshoot info also names the OrcaSlicer version). | Own version wherever users see it. |
 
 ### G-code and file headers
@@ -51,14 +51,14 @@ AXILOOP-3D is OrcaSlicer with Axiloop branding. This file lists every file that 
 | File | What changed | Why |
 |---|---|---|
 | `src/slic3r/GUI/I18N.hpp`, `src/slic3r/GUI/I18N.cpp` | All translate functions pass their result through `rebrand()`. It replaces "OrcaSlicer", "Orca Slicer", "Orcaslicer", "Orca slicer" and "Orca Dilimleyici" by the app name (not in links, domains and file names), and the short form "Orca" in phrases where it means the app ("Orca will …", "Orca would …", "Orca can …", "Orca skips …", "… printer and Orca.", "… starting Orca."). New macro `_L_KEEP_NAME` for texts that keep the upstream name. `L_str()` also rebrands. | English texts come straight from the source code; this covers them and untranslated entries in one place. Orca's own names (Orca Cloud, Orca Cube, Orca YOLO, …) keep "Orca". |
-| `src/slic3r/GUI/GUI_App.cpp` | The translation callback for libslic3r uses `I18N::translate_utf8`. Hardcoded app name in a dialog caption and the language-switch error. | Settings tooltips and slicing messages from libslic3r also get the app name. |
+| `src/slic3r/GUI/GUI_App.cpp` | The translation callback for libslic3r uses `I18N::translate_utf8`. Hardcoded app name in a dialog caption. | Settings tooltips and slicing messages from libslic3r also get the app name. Since OrcaSlicer 2.5.0, the web pages (setup wizard, home page, dialogs) also get their texts through the translate functions, so `rebrand()` covers them too. |
 | `src/slic3r/GUI/AboutDialog.cpp` | First text "AXILOOP-3D is AXILOOP-3D's slicer, based on OrcaSlicer."; link to https://www.axiloop3d.com instead of orcaslicer.com; the history sentences use `_L_KEEP_NAME`. In the "Portions copyright" window, "Orca Slicer is based on PrusaSlicer and BambuStudio" is replaced by the credit chain "AXILOOP-3D is based on OrcaSlicer … OrcaSlicer in turn is based on PrusaSlicer and Bambu Studio … Slic3r" (English only, not in the translation files). | Branding while keeping the credits (AGPL attribution). |
 | `src/slic3r/GUI/Plater.cpp` | Window title `<project> - AXILOOP-3D`. | Hardcoded name. |
-| `src/slic3r/GUI/WebGuideDialog.cpp`, `WebUserLoginDialog.cpp`, `WebDownPluginDlg.cpp` | Window titles use the app name. | Hardcoded name. |
-| `src/slic3r/GUI/HttpServer.cpp` | The browser page after a cloud login names the app. | Hardcoded name. |
+| `src/slic3r/GUI/WebGuideDialog.cpp`, `WebUserLoginDialog.cpp` | Window titles use the app name. | Hardcoded name. |
 | `src/slic3r/GUI/WipeTowerDialog.cpp` | Untranslated tip uses the app name. | Hardcoded name. |
+| `src/slic3r/plugin/host/PluginHostUi.cpp` | Windows of Python plugins that don't set a title show the app name. | Hardcoded name (new in OrcaSlicer 2.5.0). |
 | `localization/i18n/*/OrcaSlicer_*.po` (22 files) | Translations (`msgstr`) rebranded by `axiloop/rebrand_translations.ps1`, including inflected forms (Czech, Hungarian, Turkish) and the short form "Orca" in texts about the app. | All languages show the new name. |
-| `resources/web/data/text.js`, `resources/web/flush/WipingDialog.html`, `resources/web/guide/{1,3,31,5,6}/index.html` | Web texts rebranded by the same script. | Same reason. |
+| `resources/web/flush/WipingDialog.html`, `resources/web/guide/{1,5}/index.html` | English fallback texts of the web pages rebranded by the same script (the program supplies the real texts, see `GUI_App.cpp` above). | A page opened outside the program shows the new name too. |
 
 ### Colours (navy blue)
 
@@ -66,7 +66,7 @@ OrcaSlicer's teal accent is replaced by navy blue: accent `#1F3B73`, lighter nav
 
 | File | What changed | Why |
 |---|---|---|
-| About 90 files in `src/slic3r/GUI` and about 30 files in `resources/web` (CSS, HTML, SVG) | Accent colour codes only, generated by `axiloop/rebrand_colors.ps1` (hex codes, `wxColour(r, g, b)`, `IM_COL32`, `ImVec4` fractions and decimals, brace initialisers). | One mapping table for the whole interface. The script skips content colours (filament colours, G-code preview colours) because it only maps the listed accent shades. |
+| About 100 files in `src/slic3r/GUI` and about 25 files in `resources/web` (CSS, HTML, JS) | Accent colour codes only, generated by `axiloop/rebrand_colors.ps1` (hex codes, `wxColour(r, g, b)`, `IM_COL32`, `ImVec4` fractions and decimals, brace initialisers). | One mapping table for the whole interface. The script skips content colours (filament colours, G-code preview colours) because it only maps the listed accent shades. |
 | `src/slic3r/GUI/BitmapCache.hpp`, `src/slic3r/GUI/BitmapCache.cpp` | New `BitmapCache::accent_replaces()`; icons are recoloured while they are loaded. | The 400 icon files keep their upstream content, so upstream icon changes merge without conflicts. |
 | `src/libslic3r/Color.hpp` | `ORCA()`, the accent of the 3D view, set by hand to the lighter navy `#3B62AE` (not by the script). | The dark navy would hardly show on the dark 3D background. |
 | `src/slic3r/GUI/GLTexture.cpp`, `src/slic3r/GUI/ImGuiWrapper.cpp` | The SVG loaders of the 3D view and ImGui use the same recolouring, with the lighter navy in dark mode. | Toolbar and 3D view icons in the new accent. |
@@ -84,13 +84,15 @@ The help links still open the OrcaSlicer documentation (there is no AXILOOP-3D d
 | `src/slic3r/GUI/OG_CustomCtrl.cpp`, `src/slic3r/GUI/OptionsGroup.cpp` | The help tooltip of each setting starts with the note. | Same reason. |
 | `src/slic3r/GUI/Preferences.cpp` | Preference labels with a help link get the note in their tooltip. | Same reason. |
 | `src/slic3r/GUI/MainFrame.cpp` | Menu item "Calibration Guide (OrcaSlicer wiki)" with the note as help text. | Same reason. |
+| `resources/web/homepage/index.html` | The "Wiki" item in the home page's left panel reads "Wiki (OrcaSlicer)", with the note as its tooltip. | Same reason (the panel is hidden by default). |
+| `src/slic3r/GUI/NativeCommands.cpp` | In the command search (new in OrcaSlicer 2.5.0), "Open Wiki" gets " (OrcaSlicer wiki)" after its translated title; "About" uses the app icon instead of the OrcaSlicer logo; "Open YouTube Channel" opens Axiloop's channel (https://www.youtube.com/@Axiloop3d) instead of OrcaSlicer's. | Same reason; Axiloop has its own channel. |
 
 ### Online services and links
 
 | File | What changed | Why |
 |---|---|---|
 | `src/libslic3r/AppConfig.cpp` | New installs: Stealth Mode on, "Hide login side panel" on, "Show shared profiles notification" off. Update check URL: GitHub Releases API of this repository. | No cloud services, cloud login panel or cloud notifications unless the user turns them on in Preferences. The update check isn't affected by Stealth Mode and stays on. Users only get updates released for AXILOOP-3D. |
-| `src/slic3r/GUI/MainFrame.cpp` | The "Sync Presets" menu items only appear when the cloud login panel is turned on. | The menu otherwise points to Orca Cloud. Takes effect after a restart. |
+| `src/slic3r/GUI/MainFrame.cpp` | The "Sync Presets" menu items (top menu and File menu) only appear when the cloud login panel is turned on. | The menu otherwise points to Orca Cloud. Takes effect after a restart. |
 | `resources/web/guide/4orca/index.html` | The setup wizard's Stealth Mode checkbox is checked by default. | Otherwise the wizard would switch Stealth Mode off again when it finishes. |
 | `src/slic3r/GUI/MsgDialog.cpp` | "Download Beta Version" link to this repository's releases. | Users get AXILOOP-3D builds. |
 | `src/slic3r/GUI/NetworkTestDialog.cpp` | The GitHub test ("Start" for the single test and the full test) opens this repository (`SLIC3R_GITHUB_REPO`) instead of OrcaSlicer's. | Tests the connection to the place where AXILOOP-3D updates come from. |
@@ -104,7 +106,7 @@ The help links still open the OrcaSlicer documentation (there is no AXILOOP-3D d
 |---|---|---|
 | `CMakeLists.txt` | Windows installer (CPack/NSIS): name, vendor `Axiloop`, version and file name `AXILOOP-3D_Windows_Installer_V<version>`, description "AXILOOP-3D is AXILOOP-3D's slicer for FDM 3D printers, based on OrcaSlicer. Print & build dreams.", homepage, exe name, registry key, new upgrade GUID, the icon path of the Windows Apps entry (upstream doubles the install folder), and no file list while unpacking (resources keep upstream names). Linux desktop file name. macOS Xcode bundle identifier. | Own installer that can be installed next to OrcaSlicer. |
 | `src/CMakeLists.txt`, `src/OrcaSlicer_app_msvc.cpp` | Windows DLL `OrcaSlicer.dll` renamed to `axiloop-3d-core.dll` (`OUTPUT_NAME`), and the exe loads that name. The CMake target stays `OrcaSlicer`. | The name was visible in the installer and the program folder. |
-| `scripts/msix/AppxManifest.xml`, `scripts/msix/build_msix.ps1`, `scripts/msix/generate_assets.ps1` | MSIX package: names, settings folder, exe, ProgID, URL scheme, identity, publisher, logo source, version from `AXILOOP_VERSION`; upstream's one-off Store version override removed. | Microsoft Store package (not built yet, see open items). |
+| `scripts/msix/AppxManifest.xml`, `scripts/msix/build_msix.ps1`, `scripts/msix/generate_assets.ps1` | MSIX package: names, settings folder, exe, ProgID, URL scheme, identity, publisher, logo source, version from `AXILOOP_VERSION`. | Microsoft Store package (not built yet, see open items). |
 | `src/dev-utils/platform/osx/Info.plist.in`, `cmake/modules/MacOSXBundleInfo.plist.in` | Bundle identifier `com.axiloop3d.AXILOOP3D`, URL scheme `axiloop3d`, info string. `CFBundleExecutable` fixed to `OrcaSlicer`. | Own macOS identity. The executable entry pointed to the new app key, while the binary keeps its name. Not built or tested. |
 | `src/dev-utils/platform/unix/build_appimage.sh.in`, `src/dev-utils/platform/unix/build_linux_image.sh.in` | Icon taken from `OrcaSlicer_192px.png`; desktop and metainfo files use the app ID; AppImage file name with `AXILOOP_VERSION`. | The script broke when the app key changed. Not built or tested. |
 | `scripts/flatpak/com.orcaslicer.OrcaSlicer.yml`, `build_flatpak.sh`, `scripts/build_flatpak_with_docker.sh` | Flatpak app ID `com.axiloop3d.AXILOOP3D`; new metainfo file name; bundle version from `AXILOOP_VERSION`. The manifest keeps its file name. | Own Linux identity; CI refers to the manifest by name. Not built or tested. |
@@ -115,6 +117,7 @@ The help links still open the OrcaSlicer documentation (there is no AXILOOP-3D d
 | File | What changed | Why |
 |---|---|---|
 | `README.md` | Replaced by an AXILOOP-3D README (download, differences from OrcaSlicer, building, following upstream, credits, license). | GitHub page for Axiloop. On a merge conflict, keep this version. |
+| `tests/README.md`, `tests/CATCH2.md`, `scripts/orca_profile_tool.py`, `tools/orca_cad_mcp_bridge.py` | References to the removed contributor tooling files (see "Removed files") taken out or pointed to the OrcaSlicer wiki page "How to Test". | Those files aren't part of this fork. |
 
 ## Renamed files
 
@@ -134,20 +137,24 @@ Git usually carries upstream changes to these files over to the renamed files du
 | `resources/web/guide/21/common.js`, `resources/web/guide/21/common.css`, `resources/web/guide/22/common.js`, `resources/web/guide/1/1.css`, `resources/web/guide/css/dark.css` | Setup wizard: the printer page lists Axiloop at the top and all other brands under a collapsible "Other printers" (also in the Add printer window, which shares the script); the filament page shows only Axiloop's filaments when an Axiloop printer is selected (other brands can be ticked again); the welcome title uses a lighter navy in dark mode. "Other printers" is English only. | Axiloop customers see their own printers and filaments first. |
 | `axiloop/CODE_SIGNING.md` | Step-by-step guide to code signing the Windows installer and the Mac version, for readers who don't program. |
 | `.github/workflows/build_axiloop.yml` | Manual GitHub Actions build of the Linux AppImage and the macOS DMG (Actions → "Build AXILOOP-3D"). It reuses OrcaSlicer's build workflows, then renames the results to `AXILOOP-3D_Linux_V<version>.AppImage` and `AXILOOP-3D_Mac_universal_V<version>.dmg`, with the app bundle renamed to `AXILOOP-3D.app` and the DMG volume called AXILOOP-3D. The Mac version is signed and notarised when the signing secrets are set, otherwise unsigned. | OrcaSlicer's own workflows only sign and publish for OrcaSlicer's repository, and building everything daily isn't needed. A separate file keeps upstream merges free of conflicts. |
-| `axiloop/rebrand_translations.ps1` | Rebrands the translations and web texts. Run it again after every upstream merge. |
+| `axiloop/rebrand_translations.ps1` | Rebrands the translations and the English fallback texts of the web pages. Run it again after every upstream merge. |
 | `axiloop/rebrand_colors.ps1` | Replaces the OrcaSlicer accent colours by the AXILOOP-3D navy colours in the GUI code and web pages (not in `Color.hpp`, see above). Run it again after every upstream merge. |
 | `axiloop/branding/make-branding.ps1`, `axiloop/branding/Logo.svg` | Generates all branding images from the master logo (needs only Windows PowerShell and Microsoft Edge). |
 | `resources/web/image/axiloop_logo.png` | Logo in the setup wizard. |
 
 ## Removed files
 
-Upstream maintenance tooling that this fork doesn't use: contributor tooling files and the issue bots for duplicate detection (`.github/workflows/dedupe-issues.yml`, `.github/workflows/auto-close-duplicates.yml`, `.github/workflows/backfill-duplicate-comments.yml` with `scripts/auto-close-duplicates.ts` and `scripts/backfill-duplicate-comments.ts`).
+Upstream maintenance tooling that this fork doesn't use: OrcaSlicer's contributor guide `CONTRIBUTING.md` (AXILOOP-3D is maintained by Axiloop), contributor tooling files (including the ones OrcaSlicer 2.5.0 added, and the `.agents` link to them) and the issue bots for duplicate detection (`.github/workflows/dedupe-issues.yml`, `.github/workflows/auto-close-duplicates.yml`, `.github/workflows/backfill-duplicate-comments.yml` with `scripts/auto-close-duplicates.ts` and `scripts/backfill-duplicate-comments.ts`).
 
 ## Merge tips
 
+- **Releases on different release branches.** OrcaSlicer makes each minor release (2.4.0, 2.5.0) on its own release branch, so a release isn't an ancestor of the next minor release: 2.4.2 isn't in 2.5.0's history. A plain `git merge v2.5.0` therefore gave about 3,900 conflicts, nearly all in files this fork never changed. Patch releases on the same branch (2.5.0 → 2.5.1) merge normally. For the next minor release (2.6.0), do it the way 2.5.0 was merged:
+  1. `git merge -s ours --no-commit v2.6.0`, so the merge is recorded, then `git read-tree --reset -u v2.6.0`, so every file is exactly upstream's.
+  2. Re-apply this fork's changes: `git diff --binary -M --diff-filter=AMR <previous base tag> HEAD -- . ":!*.po" > ours.patch`, then `git apply --3way --index ours.patch`. Leave out files that upstream deleted (`git apply` names them); check whether their content moved elsewhere.
+  3. Resolve the conflicts (`git diff --name-only --diff-filter=U`), remove the contributor tooling files again (see "Removed files"), run both scripts below, check `git grep -n "AXILOOP-3D:"` against the old branch, then `git commit`.
 - A removed file that upstream changed: `git merge` stops with a "modify/delete" conflict. Remove it again with `git rm <file>`.
 - `README.md`: keep this repository's version.
-- Translations and web texts: for a conflicting `.po`, `text.js` or web `.html` file, take upstream's version (`git checkout --theirs <file>`). After the merge, always run `axiloop/rebrand_translations.ps1`; running it on files that are already rebranded changes nothing. If `resources/web/guide/1/index.html` or `resources/web/guide/4orca/index.html` conflicted, apply their manual changes again (wizard logo, Stealth Mode checkbox).
+- Translations and web texts: for a conflicting `.po` or web `.html` file, take upstream's version (`git checkout --theirs <file>`). After the merge, always run `axiloop/rebrand_translations.ps1`; running it on files that are already rebranded changes nothing. If `resources/web/guide/1/index.html` or `resources/web/guide/4orca/index.html` conflicted, apply their manual changes again (wizard logo, Stealth Mode checkbox).
 - Colours: after the merge, always run `axiloop/rebrand_colors.ps1`; it recolours new upstream code that uses the teal accent. For a conflict in a line it changed, take upstream's version and run the script again.
 - New upstream texts that use the short form "Orca" for the app: add the phrase to the lists in `rebrand()` (`src/slic3r/GUI/I18N.cpp`) and in `axiloop/rebrand_translations.ps1`.
 - Branding images: if upstream changes one of the image files listed above, keep this repository's version or regenerate with `axiloop/branding/make-branding.ps1`.
@@ -168,12 +175,14 @@ Upstream maintenance tooling that this fork doesn't use: contributor tooling fil
 | Image file names (`OrcaSlicer_*.png` etc.) | Only their content changed. |
 | Linux binary name `orca-slicer`, macOS folder `OrcaSlicer.app` | Renaming would need changes across the build scripts and CI for platforms that aren't built yet. |
 | `src/slic3r/Utils/BBLNetworkPlugin.cpp` (`orca-slicer.exe` check) | That length comparison never matches, also upstream, so the exe rename changes nothing. |
-| Unused Orca logos (`OrcaSlicer_gradient.svg`, `OrcaSlicer_gradient_narrow.svg`, `OrcaSlicer_gray.svg`, `studio_logo.svg`) and Orca Cloud images (`OrcaSlicer_gradient_circle.svg`, `resources/web/image/logo.png`) | Not shown anywhere, or they belong to Orca Cloud (hidden by default). |
+| Unused Orca logos (`OrcaSlicer_gradient.svg`, `OrcaSlicer_gradient_narrow.svg`, `OrcaSlicer_gray.svg`, `studio_logo.svg`) and Orca Cloud images (`OrcaSlicer_gradient_circle.svg`, also the home page badge of projects published to Orca Cloud; `resources/web/image/logo.png`) | Not shown anywhere, or they belong to Orca Cloud (hidden by default). |
 | `src/dev-utils/platform/msw/OrcaSlicer-gcodeviewer.rc.in` | Not used by the build. |
+| Wiki icon buttons (calibration windows, Publish, Troubleshoot and other dialogs, the texture displacement tool) | Their tooltip already shows the orcaslicer.com address; only text links get the "(OrcaSlicer wiki)" label. |
+| `src/slic3r/Utils/MoonrakerPrinterAgent.cpp` (client name `OrcaSlicer` when connecting to Moonraker) | New in OrcaSlicer 2.5.0. Kept like the first G-code line, until Moonraker knows AXILOOP-3D. |
 
 ## Open items
 
-- GitHub Actions: OrcaSlicer's workflows aren't adapted and their builds are turned off in the repository's Actions settings; Linux and macOS are built with `build_axiloop.yml` instead. The Windows installer is still built locally.
+- GitHub Actions: OrcaSlicer's workflows aren't adapted and their builds are turned off in the repository's Actions settings (Assign, Build all, Doxygen, Shellcheck and, since 2.5.0, Approve PR checks); Linux and macOS are built with `build_axiloop.yml` instead. The Windows installer is still built locally. New upstream workflows that run on a schedule or on push without a check for OrcaSlicer's repository should be turned off in the settings too.
 - Code signing: the Windows installer and program files aren't signed yet; the Mac version is signed with the original developer's personal Apple account until Axiloop sets its own secrets. See `axiloop/CODE_SIGNING.md`.
 - MSIX: regenerate the logo PNGs in `scripts/msix/assets/` with `generate_assets.ps1` and set Axiloop's publisher ID in `build_msix.ps1` before building a Store package (marked `TODO`).
 - Flatpak/AppImage metainfo: replace the OrcaSlicer screenshots and release list when a Linux version is released (marked `TODO`).

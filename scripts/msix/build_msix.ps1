@@ -32,16 +32,6 @@ if ($versionContent -notmatch 'set\(AXILOOP_VERSION "(\d+)\.(\d+)\.(\d+)') {
     throw "Could not parse AXILOOP_VERSION from version.inc"
 }
 $msixVersion = "$($Matches[1]).$($Matches[2]).$($Matches[3]).0"
-
-# Optional one-off override (Major.Minor.Build.0), e.g. when a wrong build was already published to the Store.
-# AXILOOP-3D: upstream's override for its own Store listing removed
-$msixVersionOverride = ''
-if ($msixVersionOverride) {
-    if ($msixVersionOverride -notmatch '^\d+\.\d+\.\d+\.0$') {
-        throw "MSIX version override '$msixVersionOverride' must be Major.Minor.Build.0 - the Store rejects a non-zero revision field."
-    }
-    $msixVersion = $msixVersionOverride
-}
 Write-Output "MSIX version: $msixVersion"
 
 if (-not (Test-Path (Join-Path $InstallDir 'axiloop-3d.exe'))) {

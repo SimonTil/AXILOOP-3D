@@ -35,13 +35,13 @@ resolution: 0.1
 
 ## Building
 
-AXILOOP-3D builds the same way as OrcaSlicer: see [OrcaSlicer Wiki - How to build](https://www.orcaslicer.com/wiki/how_to_build). On Windows, run `build_release_vs.bat` from an "x64 Native Tools Command Prompt" for Visual Studio (Strawberry Perl and CMake are required). The program ends up in `build\OrcaSlicer`.
+AXILOOP-3D builds the same way as OrcaSlicer: see [OrcaSlicer Wiki - How to build](https://www.orcaslicer.com/wiki/how_to_build). On Windows, run `build_win.bat -d -s --installer` (`-h` lists all options; `build_win.bat -u` installs CMake, Perl and Git). The program ends up in `build\OrcaSlicer`, the installer in `build\`.
 
 ## Following OrcaSlicer
 
 - `main` is an unchanged mirror of OrcaSlicer's `main`.
-- The work branch `axiloop-3d` is based on OrcaSlicer release tags. A new OrcaSlicer release is merged in with `git merge <tag>`.
-- After a merge, run `axiloop/rebrand_translations.ps1` to rebrand the translations again. The branding images are generated with `axiloop/branding/make-branding.ps1`.
+- The work branch `axiloop-3d` is based on OrcaSlicer release tags (currently `v2.5.0`). A patch release is merged in with `git merge <tag>`; a new minor release needs the steps in "Merge tips" in `axiloop/CHANGED_FILES.md`.
+- After a merge, run `axiloop/rebrand_translations.ps1` and `axiloop/rebrand_colors.ps1` again. The branding images are generated with `axiloop/branding/make-branding.ps1`.
 - [axiloop/CHANGED_FILES.md](axiloop/CHANGED_FILES.md) lists the files where merge conflicts can occur.
 
 ## Credits

@@ -8,18 +8,18 @@ set(SLIC3R_APP_KEY "AXILOOP-3D")
 if(NOT DEFINED BBL_INTERNAL_TESTING)
 set(BBL_INTERNAL_TESTING "0")
 endif()
-set(SoftFever_VERSION "2.4.2")
+set(SoftFever_VERSION "2.5.0")
 string(REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.([0-9]+)"
        SoftFever_VERSION_MATCH ${SoftFever_VERSION})
 set(ORCA_VERSION_MAJOR ${CMAKE_MATCH_1})
 set(ORCA_VERSION_MINOR ${CMAKE_MATCH_2})
 set(ORCA_VERSION_PATCH ${CMAKE_MATCH_3})
 
-set(SLIC3R_VERSION "02.06.00.51")
+set(SLIC3R_VERSION "02.08.01.55")
 
 # AXILOOP-3D: own product version, shown to users and used for AXILOOP-3D release tags (vX.Y.Z).
 # SoftFever_VERSION above stays upstream's version: 3MF/config compatibility and migrations compare against it.
-set(AXILOOP_VERSION "0.1.0")
+set(AXILOOP_VERSION "0.2.0")
 string(REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.([0-9]+)"
        AXILOOP_VERSION_MATCH ${AXILOOP_VERSION})
 set(AXILOOP_VERSION_MAJOR ${CMAKE_MATCH_1})
