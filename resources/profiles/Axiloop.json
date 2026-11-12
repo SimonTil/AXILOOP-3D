@@ -1,0 +1,106 @@
+{
+    "name":  "Axiloop",
+    "version":  "02.04.00.01",
+    "force_update":  "0",
+    "description":  "Axiloop printers",
+    "machine_model_list":  [
+                               {
+                                   "name":  "Axiloop MC8",
+                                   "sub_path":  "machine/Axiloop MC8.json"
+                               },
+                               {
+                                   "name":  "Axiloop MC8 Pro",
+                                   "sub_path":  "machine/Axiloop MC8 Pro.json"
+                               }
+                           ],
+    "process_list":  [
+                         {
+                             "name":  "fdm_process_common",
+                             "sub_path":  "process/fdm_process_common.json"
+                         },
+                         {
+                             "name":  "fdm_process_Axiloop_common",
+                             "sub_path":  "process/fdm_process_Axiloop_common.json"
+                         },
+                         {
+                             "name":  "fdm_process_Axiloop_MC8_common",
+                             "sub_path":  "process/fdm_process_Axiloop_MC8_common.json"
+                         },
+                         {
+                             "name":  "0.12mm Fine @Axiloop MC8",
+                             "sub_path":  "process/0.12mm Fine @Axiloop MC8.json"
+                         },
+                         {
+                             "name":  "0.16mm Optimal @Axiloop MC8",
+                             "sub_path":  "process/0.16mm Optimal @Axiloop MC8.json"
+                         },
+                         {
+                             "name":  "0.20mm Standard @Axiloop MC8",
+                             "sub_path":  "process/0.20mm Standard @Axiloop MC8.json"
+                         },
+                         {
+                             "name":  "0.24mm Draft @Axiloop MC8",
+                             "sub_path":  "process/0.24mm Draft @Axiloop MC8.json"
+                         },
+                         {
+                             "name":  "0.28mm Extra Draft @Axiloop MC8",
+                             "sub_path":  "process/0.28mm Extra Draft @Axiloop MC8.json"
+                         }
+                     ],
+    "filament_list":  [
+                          {
+                              "name":  "fdm_filament_common",
+                              "sub_path":  "filament/fdm_filament_common.json"
+                          },
+                          {
+                              "name":  "fdm_filament_pla",
+                              "sub_path":  "filament/fdm_filament_pla.json"
+                          },
+                          {
+                              "name":  "fdm_filament_petg",
+                              "sub_path":  "filament/fdm_filament_petg.json"
+                          },
+                          {
+                              "name":  "fdm_filament_pva",
+                              "sub_path":  "filament/fdm_filament_pva.json"
+                          },
+                          {
+                              "name":  "fdm_filament_tpu",
+                              "sub_path":  "filament/fdm_filament_tpu.json"
+                          },
+                          {
+                              "name":  "Axiloop PLA@MC8",
+                              "sub_path":  "filament/Axiloop PLA@MC8.json"
+                          },
+                          {
+                              "name":  "Axiloop PETG@MC8",
+                              "sub_path":  "filament/Axiloop PETG@MC8.json"
+                          },
+                          {
+                              "name":  "Axiloop PVA@MC8",
+                              "sub_path":  "filament/Axiloop PVA@MC8.json"
+                          },
+                          {
+                              "name":  "Axiloop TPU@MC8",
+                              "sub_path":  "filament/Axiloop TPU@MC8.json"
+                          }
+                      ],
+    "machine_list":  [
+                         {
+                             "name":  "fdm_machine_common",
+                             "sub_path":  "machine/fdm_machine_common.json"
+                         },
+                         {
+                             "name":  "fdm_Axiloop_common",
+                             "sub_path":  "machine/fdm_Axiloop_common.json"
+                         },
+                         {
+                             "name":  "Axiloop MC8 0.4 nozzle",
+                             "sub_path":  "machine/Axiloop MC8 0.4 nozzle.json"
+                         },
+                         {
+                             "name":  "Axiloop MC8 Pro 0.4 nozzle",
+                             "sub_path":  "machine/Axiloop MC8 Pro 0.4 nozzle.json"
+                         }
+                     ]
+}

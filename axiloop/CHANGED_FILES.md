@@ -129,6 +129,7 @@ Git usually carries upstream changes to these files over to the renamed files du
 | File | Purpose |
 |---|---|
 | `axiloop/CHANGED_FILES.md` | This overview. |
+| `resources/profiles/Axiloop.json`, `resources/profiles/Axiloop/` | Axiloop's own printer profiles, supplied by Axiloop for a test printer "X1" and renamed to the real models: **Axiloop MC8** and **Axiloop MC8 Pro**, each with a 0.4 mm nozzle, five shared print settings (0.12 to 0.28 mm, `@Axiloop MC8`) and four shared filaments (PLA, PETG, PVA, TPU, `@MC8`). The MC8 Pro is the MC8 with a heated chamber and an air system (`support_chamber_temp_control` and `support_air_filtration` on); the MC8 sets both off explicitly, because OrcaSlicer's default is on. Further changes to Axiloop's files: the start G-code that Axiloop supplied separately, `Axiloop PLA@MC8` as default filament, the AXILOOP-3D bed logo instead of the OrcaSlicer one, the same cover image for both models. Left out: filaments for an "Axiloop H400 Pro" that isn't in the profiles, a test filament and Value PLA. Checked with `OrcaSlicer_profile_validator`. | AXILOOP-3D comes with Axiloop's printers. |
 | `axiloop/CODE_SIGNING.md` | Step-by-step guide to code signing the Windows installer, for readers who don't program. |
 | `axiloop/rebrand_translations.ps1` | Rebrands the translations and web texts. Run it again after every upstream merge. |
 | `axiloop/rebrand_colors.ps1` | Replaces the OrcaSlicer accent colours by the AXILOOP-3D navy colours in the GUI code and web pages (not in `Color.hpp`, see above). Run it again after every upstream merge. |
@@ -160,7 +161,7 @@ Upstream maintenance tooling that this fork doesn't use: contributor tooling fil
 | History texts in the About dialog | Credits. |
 | Content colours: filament colour palettes and defaults, G-code preview feature colours, debug colours; the icon files themselves | They aren't part of the interface accent; icons are recoloured at load time. `load_from_svg_file_change_color()` in `BitmapCache.cpp` keeps using teal as a placeholder for filament colours. |
 | Fonts | The AXILOOP pages use Inter, which isn't bundled; the interface keeps OrcaSlicer's fonts. |
-| Internal names: CMake targets `OrcaSlicer*`, `OrcaSlicer.dll`, source file names, `ORCA_*` variables, `GCODEVIEWER_APP_KEY`, Linux D-Bus names | Not visible to users. Renaming them would only cause merge conflicts. |
+| Internal names: CMake targets `OrcaSlicer*`, source file names, `ORCA_*` variables, `GCODEVIEWER_APP_KEY`, Linux D-Bus names | Not visible to users. Renaming them would only cause merge conflicts. |
 | Image file names (`OrcaSlicer_*.png` etc.) | Only their content changed. |
 | Linux binary name `orca-slicer`, macOS folder `OrcaSlicer.app` | Renaming would need changes across the build scripts and CI for platforms that aren't built yet. |
 | `src/slic3r/Utils/BBLNetworkPlugin.cpp` (`orca-slicer.exe` check) | That length comparison never matches, also upstream, so the exe rename changes nothing. |
@@ -169,8 +170,7 @@ Upstream maintenance tooling that this fork doesn't use: contributor tooling fil
 
 ## Open items
 
-- GitHub: turn on Issues for the repository (Settings → General → Features → Issues) just before the first commit; the bug-report link in the app needs them.
-- GitHub Actions: not adapted yet. The workflows still read `SoftFever_VERSION` for artifact names; switch them to `AXILOOP_VERSION` when the builds are set up (only Windows is planned).
+- GitHub Actions: not adapted. The workflows still read `SoftFever_VERSION` for artifact names, and the builds are turned off in the repository's Actions settings.
 - Code signing: the installer and program files aren't signed yet; see `axiloop/CODE_SIGNING.md`.
 - MSIX: regenerate the logo PNGs in `scripts/msix/assets/` with `generate_assets.ps1` and set Axiloop's publisher ID in `build_msix.ps1` before building a Store package (marked `TODO`).
-- Flatpak/AppImage metainfo: replace the OrcaSlicer screenshots and release list at the first release (marked `TODO`).
+- Flatpak/AppImage metainfo: replace the OrcaSlicer screenshots and release list when a Linux version is released (marked `TODO`).

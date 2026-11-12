@@ -1,0 +1,141 @@
+{
+  "type": "machine",
+  "name": "fdm_Axiloop_common",
+  "from": "system",
+  "instantiation": "false",
+  "inherits": "fdm_machine_common",
+  "gcode_flavor": "klipper",
+  "machine_max_acceleration_e": [
+    "5000",
+    "5000"
+  ],
+  "machine_max_acceleration_extruding": [
+    "20000",
+    "20000"
+  ],
+  "machine_max_acceleration_retracting": [
+    "5000",
+    "5000"
+  ],
+  "machine_max_acceleration_travel": [
+    "20000",
+    "20000"
+  ],
+  "machine_max_acceleration_x": [
+    "20000",
+    "20000"
+  ],
+  "machine_max_acceleration_y": [
+    "20000",
+    "20000"
+  ],
+  "machine_max_acceleration_z": [
+    "500",
+    "200"
+  ],
+  "machine_max_speed_e": [
+    "25",
+    "25"
+  ],
+  "machine_max_speed_x": [
+    "500",
+    "200"
+  ],
+  "machine_max_speed_y": [
+    "500",
+    "200"
+  ],
+  "machine_max_speed_z": [
+    "12",
+    "12"
+  ],
+  "machine_max_jerk_e": [
+    "2.5",
+    "2.5"
+  ],
+  "machine_max_jerk_x": [
+    "9",
+    "9"
+  ],
+  "machine_max_jerk_y": [
+    "9",
+    "9"
+  ],
+  "machine_max_jerk_z": [
+    "0.2",
+    "0.4"
+  ],
+  "machine_min_extruding_rate": [
+    "0",
+    "0"
+  ],
+  "machine_min_travel_rate": [
+    "0",
+    "0"
+  ],
+  "max_layer_height": [
+    "0.32"
+  ],
+  "min_layer_height": [
+    "0.08"
+  ],
+  "printable_height": "250",
+  "extruder_clearance_radius": "65",
+  "extruder_clearance_height_to_rod": "36",
+  "extruder_clearance_height_to_lid": "140",
+  "printer_settings_id": "",
+  "printer_technology": "FFF",
+  "printer_variant": "0.4",
+  "retraction_minimum_travel": [
+    "1"
+  ],
+  "retract_before_wipe": [
+    "70%"
+  ],
+  "retract_when_changing_layer": [
+    "1"
+  ],
+  "retraction_length": [
+    "5"
+  ],
+  "retract_length_toolchange": [
+    "0"
+  ],
+  "z_hop": [
+    "1"
+  ],
+  "retract_restart_extra": [
+    "0"
+  ],
+  "retract_restart_extra_toolchange": [
+    "0"
+  ],
+  "retraction_speed": [
+    "30"
+  ],
+  "deretraction_speed": [
+    "30"
+  ],
+  "z_hop_types": "Normal Lift",
+  "silent_mode": "0",
+  "single_extruder_multi_material": "1",
+  "change_filament_gcode": ";MAT_LAYER_CHANGE\n;[layer_z]",
+  "wipe": [
+    "0"
+  ],
+  "default_filament_profile": [
+    ""
+  ],
+  "default_print_profile": "0.20mm Standard @Axiloop MC8",
+  "bed_exclude_area": [
+    "0x0"
+  ],
+  "machine_start_gcode": "M104 S140 T0\nM104 S140 T{current_extruder}\nM190 S[bed_temperature_initial_layer_single]\nM109 S140 T0\nG28\nT0\nG28\nT{current_extruder}\nM109 S[nozzle_temperature_initial_layer]  T{current_extruder}\nPRINT_START EXTRUDER=[nozzle_temperature_initial_layer] BED=[bed_temperature_initial_layer_single]\nG1 Z0.2\nG1 X1 Y1 F6000\nG0 E2 F300\nG0 X240 E15 F3000\nG0 Y11 E0.700 F3000\nG0 X239.5\nG0 E0.2\nG0 Y1.5 E0.700\nG0 X18 E15 F3000\nM400",
+  "machine_end_gcode": "PRINT_END\nTIMELAPSE_RENDER",
+  "layer_change_gcode": ";AFTER_LAYER_CHANGE\n;[layer_z]",
+  "before_layer_change_gcode": ";BEFORE_LAYER_CHANGE\n;[layer_z]\nG92 E0\nTIMELAPSE_TAKE_FRAME",
+  "machine_pause_gcode": "PAUSE",
+  "scan_first_layer": "0",
+  "nozzle_type": "undefine",
+  "auxiliary_fan": "0"
+}

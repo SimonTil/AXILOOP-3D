@@ -1,0 +1,15 @@
+{
+    "type": "process",
+    "name": "fdm_process_Axiloop_MC8_common",
+    "inherits": "fdm_process_Axiloop_common",
+    "from": "system",
+    "instantiation": "false",
+    "default_acceleration": "15000",
+    "travel_acceleration": "17000",
+    "outer_wall_acceleration": "13000",
+    "inner_wall_acceleration": "15000",
+    "initial_layer_acceleration": "5000",
+    "top_surface_acceleration": "5000",
+    "travel_speed": "400",
+    "compatible_printers": []
+}

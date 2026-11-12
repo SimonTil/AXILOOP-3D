@@ -1,0 +1,12 @@
+{
+    "type": "machine_model",
+    "name": "Axiloop MC8 Pro",
+    "model_id": "Axiloop_MC8_Pro",
+    "nozzle_diameter": "0.4",
+    "machine_tech": "FFF",
+    "family": "Axiloop",
+    "bed_model": "",
+    "bed_texture": "axiloop_bed_texture.svg",
+    "hotend_model": "",
+    "default_materials": "Axiloop PLA@MC8;Axiloop PETG@MC8;Axiloop PVA@MC8;Axiloop TPU@MC8"
+}
