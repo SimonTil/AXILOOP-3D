@@ -1,6 +1,6 @@
-# Code signing the Windows installer
+# Code signing the Windows installer and the Mac version
 
-This guide is for someone at Axiloop who doesn't program. It explains what a code-signing certificate does, what it takes to get one and how to sign the AXILOOP-3D installer. You don't need to change any program code for this.
+This guide is for someone at Axiloop who doesn't program. It explains what a code-signing certificate does, what it takes to get one and how to sign the AXILOOP-3D installer. You don't need to change any program code for this. The Mac version works differently: see [The Mac version](#the-mac-version).
 
 Prices, rules and screens were checked against Microsoft's documentation in November 2026, and they can change. If a screen looks different, follow the Microsoft page listed under [Sources](#sources).
 
@@ -141,9 +141,32 @@ Anyone who can sign can publish software in Axiloop's name.
 
 These tasks need someone who can change the build. They aren't set up or tested yet.
 
-- **Sign the program itself.** The steps above sign only the installer, while the program files inside it stay unsigned. Microsoft advises signing all files, and Smart App Control on Windows 11 can block unsigned programs. These files must be signed before the installer is packed: `axiloop-3d.exe`, `OrcaSlicer.dll` and the other program files.
+- **Sign the program itself.** The steps above sign only the installer, while the program files inside it stay unsigned. Microsoft advises signing all files, and Smart App Control on Windows 11 can block unsigned programs. These files must be signed before the installer is packed: `axiloop-3d.exe`, `axiloop-3d-core.dll` and the other program files.
 - **Automate signing.** Once the Windows build runs in GitHub Actions, Microsoft's [Artifact Signing action](https://github.com/azure/artifact-signing-action) can sign during the build. Keep the sign-in details in GitHub's encrypted secrets.
 - **Consider the Microsoft Store.** It's the only route that avoids the warning entirely, because Microsoft signs Store apps itself. `scripts/msix/` contains the package setup, but it has not been built or tested; see "Open items" in `axiloop/CHANGED_FILES.md`.
+
+## The Mac version
+
+The Mac version is built on GitHub ("Actions" tab → **Build AXILOOP-3D** → **Run workflow**). The build signs it and has Apple check it ("notarisation") by itself, as long as the signing details are stored in the repository's secrets. Without them, it makes an unsigned version that Mac users can only open through **System Settings** → **Privacy & Security** → **Open Anyway**.
+
+The first Mac versions are signed with the original developer's personal Apple account, so macOS shows that person's name as the developer. Those secrets are removed when the repository is handed over. To sign with Axiloop's own name:
+
+1. Join the [Apple Developer Program](https://developer.apple.com/programs/enroll/) as an **organisation** (US$99 a year). Apple asks for a D-U-N-S number, which is free but can take a few weeks to get.
+2. The person with the **Account Holder** role creates a **Developer ID Application** certificate on [developer.apple.com](https://developer.apple.com/account/resources/certificates/add). A developer can help with the certificate request and with turning the certificate into a `.p12` file.
+3. Create an app-specific password on [account.apple.com](https://account.apple.com) (**Sign-In and Security** → **App-Specific Passwords**).
+4. In the GitHub repository, go to **Settings** → **Secrets and variables** → **Actions** and enter these secrets:
+
+| Secret | Value |
+|---|---|
+| `BUILD_CERTIFICATE_BASE64` | The `.p12` file, base64-encoded |
+| `P12_PASSWORD` | The password of the `.p12` file |
+| `KEYCHAIN_PASSWORD` | Any random password; it's only used during the build |
+| `MACOS_CERTIFICATE_ID` | The certificate's name, such as `Developer ID Application: Axiloop Ltd (AB12CD34EF)` |
+| `APPLE_DEV_ACCOUNT` | The email address of the Apple account |
+| `TEAM_ID` | The 10-character Team ID from the account's Membership details |
+| `APP_PWD` | The app-specific password from step 3 |
+
+The next Mac build is then signed with Axiloop's name. Users can install it over the earlier version as usual. Don't revoke the earlier certificate: Macs could then refuse to open copies that were already handed out.
 
 ## Sources
 

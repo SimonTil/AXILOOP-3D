@@ -1,0 +1,212 @@
+# AXILOOP-3D: builds the Linux AppImage and the macOS DMG of this fork, started by hand
+# (Actions -> "Build AXILOOP-3D" -> Run workflow). It reuses OrcaSlicer's build workflows;
+# OrcaSlicer's own "Build all" stays disabled. The Windows installer is built locally (see the
+# maintenance guide). macOS is signed and notarised when the signing secrets are set
+# (see axiloop/CODE_SIGNING.md); without them it produces an unsigned DMG.
+name: Build AXILOOP-3D
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platforms to build'
+        type: choice
+        options:
+          - linux and macos
+          - linux
+          - macos
+        default: linux and macos
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+# actions: write lets OrcaSlicer's macOS step delete its intermediate per-architecture artifacts
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build_linux:
+    name: Linux
+    if: ${{ inputs.platform != 'macos' }}
+    uses: ./.github/workflows/build_check_cache.yml
+    with:
+      os: ubuntu-24.04
+      arch: ""
+    secrets: inherit
+
+  package_linux:
+    name: Package Linux AppImage
+    needs: build_linux
+    if: ${{ !cancelled() && needs.build_linux.result == 'success' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: version.inc
+          sparse-checkout-cone-mode: false
+
+      - name: Get the AXILOOP-3D version
+        run: echo "ver=$(grep 'set(AXILOOP_VERSION ' version.inc | cut -d '"' -f2)" >> "$GITHUB_ENV"
+
+      - name: Download the AppImage
+        uses: actions/download-artifact@v8
+        with:
+          pattern: OrcaSlicer_Linux_ubuntu_*
+          path: linux
+          merge-multiple: true
+
+      # Give the AppImage the AXILOOP-3D name and version
+      - name: Rename the AppImage
+        run: |
+          appimage=$(find linux -name '*.AppImage' -print -quit)
+          [ -n "$appimage" ] || { echo "No AppImage found"; exit 1; }
+          mv "$appimage" "AXILOOP-3D_Linux_V${ver}.AppImage"
+          chmod +x "AXILOOP-3D_Linux_V${ver}.AppImage"
+
+      - name: Upload the AppImage
+        uses: actions/upload-artifact@v7
+        with:
+          name: AXILOOP-3D_Linux_V${{ env.ver }}
+          path: AXILOOP-3D_Linux_V${{ env.ver }}.AppImage
+
+  build_macos_arch:
+    name: macOS ${{ matrix.arch }}
+    if: ${{ inputs.platform != 'linux' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - arm64
+          - x86_64
+    uses: ./.github/workflows/build_check_cache.yml
+    with:
+      os: macos-14
+      arch: ${{ matrix.arch }}
+    secrets: inherit
+
+  # Combines both architectures into one app; OrcaSlicer's workflow packs it in an unsigned DMG
+  build_macos_universal:
+    name: macOS universal
+    needs: build_macos_arch
+    if: ${{ !cancelled() && needs.build_macos_arch.result == 'success' }}
+    uses: ./.github/workflows/build_orca.yml
+    with:
+      os: macos-14
+      arch: universal
+      macos-combine-only: true
+    secrets: inherit
+
+  package_macos:
+    name: Sign and package macOS DMG
+    needs: build_macos_universal
+    if: ${{ !cancelled() && needs.build_macos_universal.result == 'success' }}
+    runs-on: macos-14
+    env:
+      BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      CERTIFICATE_ID: ${{ secrets.MACOS_CERTIFICATE_ID }}
+      APPLE_DEV_ACCOUNT: ${{ secrets.APPLE_DEV_ACCOUNT }}
+      TEAM_ID: ${{ secrets.TEAM_ID }}
+      APP_PWD: ${{ secrets.APP_PWD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          lfs: 'false'
+
+      - name: Get the AXILOOP-3D version
+        run: echo "ver=$(grep 'set(AXILOOP_VERSION ' version.inc | cut -d '"' -f2)" >> "$GITHUB_ENV"
+
+      # Sign only when the certificate is set; stop when it is set but other signing secrets are missing
+      - name: Check the signing secrets
+        run: |
+          if [ -z "$BUILD_CERTIFICATE_BASE64" ]; then
+            echo "No signing certificate set: building an unsigned DMG."
+            echo "sign=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          missing=""
+          for name in P12_PASSWORD KEYCHAIN_PASSWORD CERTIFICATE_ID APPLE_DEV_ACCOUNT TEAM_ID APP_PWD; do
+            [ -n "${!name}" ] || missing="$missing $name"
+          done
+          if [ -n "$missing" ]; then
+            echo "Signing secrets missing:$missing"
+            exit 1
+          fi
+          echo "sign=true" >> "$GITHUB_ENV"
+
+      - name: Download the unsigned DMG
+        uses: actions/download-artifact@v8
+        with:
+          pattern: OrcaSlicer_Mac_universal_*
+          path: mac
+          merge-multiple: true
+
+      # Copy the app out of OrcaSlicer's DMG under the AXILOOP-3D name; the app only uses relative paths inside the bundle
+      - name: Extract the app
+        run: |
+          dmg=$(find mac -name 'OrcaSlicer_Mac_universal_*.dmg' -print -quit)
+          [ -n "$dmg" ] || { echo "No DMG found"; exit 1; }
+          hdiutil attach "$dmg" -nobrowse -readonly -mountpoint "$RUNNER_TEMP/orca_dmg"
+          mkdir -p dmg_root
+          ditto "$RUNNER_TEMP/orca_dmg/OrcaSlicer.app" "dmg_root/AXILOOP-3D.app"
+          hdiutil detach "$RUNNER_TEMP/orca_dmg"
+          ln -s /Applications dmg_root/Applications
+
+      # Import the Developer ID certificate into a temporary keychain and sign the app
+      - name: Sign the app
+        if: ${{ env.sign == 'true' }}
+        run: |
+          CERTIFICATE_PATH="$RUNNER_TEMP/build_certificate.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security default-keychain -s "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          rm -f "$CERTIFICATE_PATH"
+          codesign --deep --force --verbose --options runtime --timestamp \
+            --entitlements scripts/disable_validation.entitlements \
+            --sign "$CERTIFICATE_ID" "dmg_root/AXILOOP-3D.app"
+          codesign --verify --deep --strict --verbose=2 "dmg_root/AXILOOP-3D.app"
+
+      - name: Create the DMG
+        run: |
+          source scripts/retry.sh
+          retry hdiutil create -volname "AXILOOP-3D" -srcfolder dmg_root -ov -format UDZO "AXILOOP-3D_Mac_universal_V${ver}.dmg"
+
+      # Sign the DMG, send it to Apple for notarisation and attach the ticket
+      - name: Sign and notarise the DMG
+        if: ${{ env.sign == 'true' }}
+        run: |
+          dmg="AXILOOP-3D_Mac_universal_V${ver}.dmg"
+          codesign --force --verbose --timestamp --sign "$CERTIFICATE_ID" "$dmg"
+          xcrun notarytool submit "$dmg" --apple-id "$APPLE_DEV_ACCOUNT" --team-id "$TEAM_ID" --password "$APP_PWD" \
+            --wait --output-format json > notary.json || true
+          cat notary.json
+          status=$(plutil -extract status raw -o - notary.json 2>/dev/null || echo "unknown")
+          if [ "$status" != "Accepted" ]; then
+            id=$(plutil -extract id raw -o - notary.json 2>/dev/null || echo "")
+            [ -n "$id" ] && xcrun notarytool log "$id" --apple-id "$APPLE_DEV_ACCOUNT" --team-id "$TEAM_ID" --password "$APP_PWD"
+            echo "Notarisation status: $status"
+            exit 1
+          fi
+          xcrun stapler staple "$dmg"
+          xcrun stapler validate "$dmg"
+
+      - name: Remove the temporary keychain
+        if: ${{ always() && env.sign == 'true' }}
+        run: security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db" || true
+
+      - name: Upload the DMG
+        uses: actions/upload-artifact@v7
+        with:
+          name: AXILOOP-3D_Mac_universal_V${{ env.ver }}${{ env.sign != 'true' && '_unsigned' || '' }}
+          path: AXILOOP-3D_Mac_universal_V${{ env.ver }}.dmg
