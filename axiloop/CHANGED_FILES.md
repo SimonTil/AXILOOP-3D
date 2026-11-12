@@ -72,6 +72,7 @@ OrcaSlicer's teal accent is replaced by navy blue: accent `#1F3B73`, lighter nav
 | `src/slic3r/GUI/GLTexture.cpp`, `src/slic3r/GUI/ImGuiWrapper.cpp` | The SVG loaders of the 3D view and ImGui use the same recolouring, with the lighter navy in dark mode. | Toolbar and 3D view icons in the new accent. |
 | `src/slic3r/GUI/Widgets/Button.cpp`, `src/slic3r/GUI/Widgets/SideButton.cpp`, `resources/web/include/global.css` | Accent colour codes only (by the script); white text on accent buttons stays as in OrcaSlicer. | Navy is dark enough for white text. |
 | `src/libslic3r/AppConfig.cpp` | New installs on Windows take light or dark mode from the Windows app theme (registry value `AppsUseLightTheme`) instead of always light. | The colour mode follows the system default; the user can still change it in Preferences. |
+| `src/libslic3r/AppConfig.cpp` | New installs open on the Prepare tab instead of the Home tab (`default_page` = 1). | Users start where they slice; Preferences → "Default page" switches back to Home. |
 
 ### Help links
 

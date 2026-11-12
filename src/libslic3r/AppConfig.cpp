@@ -195,8 +195,9 @@ void AppConfig::set_defaults()
         if (get("use_inches").empty())
             set("use_inches", "0");
 
+        // AXILOOP-3D: open on the Prepare tab instead of the Home tab
         if (get("default_page").empty())
-            set("default_page", "0");
+            set("default_page", "1");
     }
     else {
 #ifdef _WIN32
