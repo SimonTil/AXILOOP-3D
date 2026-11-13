@@ -10,7 +10,18 @@ AXILOOP-3D is Axiloop's slicer for FDM 3D printers. It is based on [OrcaSlicer](
 
 ## Download
 
-Windows builds are on the [Releases page](https://github.com/SimonTil/AXILOOP-3D/releases). Linux and macOS builds aren't available yet.
+Windows, Linux and macOS builds are on the [Releases page](https://github.com/SimonTil/AXILOOP-3D/releases). The Linux and macOS builds haven't been tested yet.
+
+## Testers of version 0.2.0: set your MC8 to 8 tools
+
+The Axiloop MC8 and MC8 Pro are toolchangers with 8 tools, but in version 0.2.0 their printer profile has only one. The next version fixes this. Until then, change it yourself:
+
+1. On the Prepare tab, click the edit button next to the printer to open its settings.
+2. Set the settings level at the top to **Advanced** (or Expert); otherwise the setting below is hidden.
+3. Open the **Multimaterial** page and set **Extruders** to **8**.
+4. Save the printer under a name of your own, for example "Axiloop MC8 8 tools", and use that printer from now on.
+
+The sidebar then shows 8 filaments, one for each tool.
 
 ## Differences from OrcaSlicer
 
