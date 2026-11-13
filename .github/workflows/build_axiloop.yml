@@ -172,10 +172,26 @@ jobs:
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           rm -f "$CERTIFICATE_PATH"
-          codesign --deep --force --verbose --options runtime --timestamp \
-            --entitlements scripts/disable_validation.entitlements \
-            --sign "$CERTIFICATE_ID" "dmg_root/AXILOOP-3D.app"
-          codesign --verify --deep --strict --verbose=2 "dmg_root/AXILOOP-3D.app"
+          # codesign --deep skips the Python runtime in Contents/Resources, so sign every Mach-O
+          # file one by one (as OrcaSlicer's own workflow does), then seal the app itself
+          app="dmg_root/AXILOOP-3D.app"
+          sign() {
+            codesign --force --options runtime --timestamp \
+              --entitlements scripts/disable_validation.entitlements --sign "$CERTIFICATE_ID" "$@"
+          }
+          machos=()
+          while IFS= read -r f; do machos+=("$f"); done < <(
+            find "$app" -type f -print0 |
+              xargs -0 file --no-pad --mime-type -- |
+              grep -v ' (for architecture ' |
+              grep ': application/x-mach-binary$' |
+              sed 's|: application/x-mach-binary$||'
+          )
+          [ "${#machos[@]}" -gt 0 ] || { echo "No Mach-O files found in $app"; exit 1; }
+          echo "Signing ${#machos[@]} Mach-O files"
+          sign "${machos[@]}"
+          sign --verbose "$app"
+          codesign --verify --deep --strict --verbose=2 "$app"
 
       - name: Create the DMG
         run: |
